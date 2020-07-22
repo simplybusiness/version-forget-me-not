@@ -1,0 +1,19 @@
+name: Check version
+
+on:
+  pull_request:
+    branches:
+      - master # default branch
+    types: [opened, synchronize]
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: ./
+        env:
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # The file path where you keep the version of gem.
+          # It is usually `lib/<gem name>/version.rb` or in the gemspec file.
+          VERSION_FILE_PATH: "<PATH>"
+
