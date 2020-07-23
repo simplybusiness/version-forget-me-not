@@ -21,6 +21,6 @@ jobs:
         with:
           ruby-version: 2.6.5
       - name: Install dependencies
-        run: gem install rspec
+        run: gem install spec
       - name: Run test
-        run: rspec spec
+        run: spec spec
