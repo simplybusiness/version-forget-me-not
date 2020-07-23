@@ -1,0 +1,26 @@
+name: Ruby CI
+
+on:
+  push:
+    branches:
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6.5
+      - name: Install dependencies
+        run: gem install rspec
+      - name: Run test
+        run: rspec spec
