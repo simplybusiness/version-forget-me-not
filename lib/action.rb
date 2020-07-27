@@ -21,7 +21,7 @@ class Action
   private
 
   def fetch_version(ref:)
-    file = client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref })
-    file.match(SEMVER_VERSION)[0]
+    content = client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref })
+    content.match(SEMVER_VERSION)[0].gsub(/\'/, '')
   end
 end

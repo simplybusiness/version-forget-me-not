@@ -19,4 +19,24 @@ describe Action do
       expect(action.version_changed?(1)).to be false
     end
   end
+
+  describe '#fetch_version' do
+    let(:content) do
+      %(
+        module TestRepo
+          VERSION='1.2.3'
+        end
+      )
+    end
+
+    it 'reads the version file and return the version for a branch' do
+      allow(client).to receive(:contents).with(
+        'simplybusiness/test',
+        path: ENV['VERSION_FILE_PATH'],
+        query: { ref: 'master' }
+      ).and_return(content)
+
+      expect(action.send(:fetch_version, ref: 'master')).to eq('1.2.3')
+    end
+  end
 end
