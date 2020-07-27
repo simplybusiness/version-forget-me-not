@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'octokit'
-gem 'rubocop'
-group :test do
+group :development, :test do
   gem 'rspec'
+  gem 'rubocop'
 end
