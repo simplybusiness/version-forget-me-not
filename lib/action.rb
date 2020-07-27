@@ -6,9 +6,9 @@ require 'octokit'
 class Action
   attr_reader :client, :repo
 
-  def initialize(repo:, client: nil)
-    @client = client || Octokit::Client.new(access_token: ENV['XBOT_TOKEN'])
-    @repo = "simplybusiness/#{repo}"
+  def initialize(owner:, repo:, client: nil)
+    @client = client || Octokit::Client.new(access_token: ENV['BOT_TOKEN'])
+    @repo = "#{owner}/#{repo}"
   end
 
   def version_changed?(pull_number)

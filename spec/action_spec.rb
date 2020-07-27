@@ -5,7 +5,7 @@ require_relative '../lib/action'
 
 describe Action do
   let(:client) { instance_double(Octokit::Client) }
-  let(:action) { Action.new(repo: 'test', client: client) }
+  let(:action) { Action.new(owner: 'simplybusiness', repo: 'test', client: client) }
 
   describe '#version_changed?' do
     it 'is truthy if the github API response includes a version file' do
