@@ -8,14 +8,14 @@ describe Action do
   let(:action) { Action.new(owner: 'simplybusiness', repo: 'test', client: client) }
 
   describe '#version_changed?' do
-    it 'is truthy if the github API response includes a version file' do
-      allow(client).to receive(:pull_request_files).and_return(['version.rb', 'foo.txt'])
-      expect(action.version_changed?(1)).to be_truthy
+    it 'return true if the github API response includes a version file' do
+      allow(client).to receive(:pull_request_files).and_return(%w[version.rb foo.txt])
+      expect(action.version_changed?(1)).to be_true
     end
 
-    it 'is falsey if the github API response does not include a version file' do
+    it 'return false if the github API response does not include a version file' do
       allow(client).to receive(:pull_request_files).and_return(['foo.txt'])
-      expect(action.version_changed?(1)).to be_falsey
+      expect(action.version_changed?(1)).to be_false
     end
   end
 end
