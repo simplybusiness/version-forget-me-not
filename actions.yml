@@ -1,0 +1,9 @@
+name: 'Version check ruby'
+author: applicationtooling@simplybusiness.co.uk
+description: 'Check for a difference in the version of the gem'
+branding:
+  icon: code
+  color: red
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
