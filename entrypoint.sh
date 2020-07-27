@@ -2,6 +2,4 @@
 
 set -e
 
-gem install octokit
-
-ruby lib/action.rb
+bundle exec ruby lib/action.rb

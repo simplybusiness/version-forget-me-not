@@ -1,6 +1,8 @@
 # frozen_string_literal: true
+
 require 'octokit'
 
+# Fetch and check the version
 class Action
   attr_reader :client, :repo
 

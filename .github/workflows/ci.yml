@@ -21,7 +21,8 @@ jobs:
         with:
           ruby-version: 2.6.5
       - name: Install dependencies
-        run: gem install rspec
-        run: gem install octokit
+        run: bundle install
+      - name: Run rubocop
+        run: bundle exec rubocop
       - name: Run test
-        run: rspec spec
+        run: bundle exec rspec spec
