@@ -10,12 +10,12 @@ describe Action do
   describe '#version_changed?' do
     it 'return true if the github API response includes a version file' do
       allow(client).to receive(:pull_request_files).and_return(%w[version.rb foo.txt])
-      expect(action.version_changed?(1)).to be_true
+      expect(action.version_changed?(1)).to be true
     end
 
     it 'return false if the github API response does not include a version file' do
       allow(client).to receive(:pull_request_files).and_return(['foo.txt'])
-      expect(action.version_changed?(1)).to be_false
+      expect(action.version_changed?(1)).to be false
     end
   end
 end
