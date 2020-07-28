@@ -19,24 +19,24 @@ describe Version do
   end
 
   describe '#compare_to' do
-    shared_examples "the other version is larger" do |other|
+    shared_examples 'the other version is larger' do |other|
       it 'returns the larger version' do
         expect(subject.compare_to(other)).to eq(other)
       end
     end
 
-    shared_examples "the subject version is larger" do |other|
+    shared_examples 'the subject version is larger' do |other|
       it 'returns the larger version' do
         expect(subject.compare_to(other)).to eq(subject)
       end
     end
 
-    include_examples "the other version is larger", Version.new('2.0.0')
-    include_examples "the other version is larger", Version.new('1.3.0')
-    include_examples "the other version is larger", Version.new('1.2.4')
+    include_examples 'the other version is larger', Version.new('2.0.0')
+    include_examples 'the other version is larger', Version.new('1.3.0')
+    include_examples 'the other version is larger', Version.new('1.2.4')
 
-    include_examples "the subject version is larger", Version.new('1.2.2')
-    include_examples "the subject version is larger", Version.new('1.1.4')
-    include_examples "the subject version is larger", Version.new('0.5.6')
+    include_examples 'the subject version is larger', Version.new('1.2.2')
+    include_examples 'the subject version is larger', Version.new('1.1.4')
+    include_examples 'the subject version is larger', Version.new('0.5.6')
   end
 end

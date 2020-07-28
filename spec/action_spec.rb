@@ -16,9 +16,9 @@ describe Action do
       )
 
     allow(client).to receive(:contents).with(
-        'simplybusiness/test',
-        path: ENV['VERSION_FILE_PATH'],
-        query: { ref: branch }
+      'simplybusiness/test',
+      path: ENV['VERSION_FILE_PATH'],
+      query: { ref: branch }
     ).and_return(content)
   end
 

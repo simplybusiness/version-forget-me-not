@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Version
   def initialize(version_string)
     @version_array = version_string.split('.').map(&:to_i)
