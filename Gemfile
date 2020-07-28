@@ -6,4 +6,5 @@ gem 'octokit'
 group :development, :test do
   gem 'rspec'
   gem 'rubocop'
+  gem 'pry'
 end
