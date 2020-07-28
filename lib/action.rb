@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'octokit'
+require 'version'
 
 # Fetch and check the version
 class Action
@@ -18,23 +19,16 @@ class Action
     client.pull_request_files(repo, pull_number).include?(ENV['VERSION_FILE_PATH'])
   end
 
-  def version_updated?(branch:, trunk: 'master')
-    compare_version_arrays(
-        fetch_version(ref: branch).split('.').map(&:to_i),
-        fetch_version(ref: trunk).split('.').map(&:to_i)
-    )
+  def version_increased?(branch_name:, trunk_name: 'master')
+    branch_version = fetch_version(ref: branch_name)
+    trunk_version = fetch_version(ref: trunk_name)
+    branch_version.compare_to(trunk_version) == branch_version
   end
 
   private
 
   def fetch_version(ref:)
     content = client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref })
-    content.match(SEMVER_VERSION)[0].gsub(/\'/, '')
-  end
-
-  # returns true if the branch version is greater than the trunk version
-  def compare_version_arrays(branch, trunk)
-    index = (0..2).find { |i| branch[i] != trunk[i] }
-    branch[index] > trunk[index] if index
+    Version.new(content.match(SEMVER_VERSION)[0].gsub(/\'/, ''))
   end
 end
