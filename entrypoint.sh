@@ -2,4 +2,4 @@
 
 set -e
 
-bundle exec ruby lib/action.rb
+bundle exec ruby run.rb
