@@ -99,11 +99,13 @@ describe Action do # rubocop: disable Metrics/BlockLength
   private
 
   def mock_version_response(branch, version)
-    content = %(
-      module TestRepo
-        VERSION='#{version}'
-      end
-    )
+    content = {
+      'content' => Base64.encode64(%(
+        module TestRepo
+          VERSION='#{version}'
+        end
+      ))
+    }
 
     allow(client).to receive(:contents).with(
       'simplybusiness/test',
