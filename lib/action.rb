@@ -24,15 +24,12 @@ class Action
 
   def version_file_changed?(pull_number)
     file_changed = client.pull_request_files(repo, pull_number).map { |res| res[:filename] }
-    puts "file changes for PR #{pull_number}: #{file_changed}"
     file_changed.include?(ENV['VERSION_FILE_PATH'])
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')
     branch_version = fetch_version(ref: branch_name)
     trunk_version = fetch_version(ref: trunk_name)
-    puts "branch version: #{branch_version}"
-    puts "trunk version: #{trunk_version}"
     branch_version > trunk_version
   end
 
