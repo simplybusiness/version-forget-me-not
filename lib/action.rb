@@ -23,7 +23,7 @@ class Action
   end
 
   def version_file_changed?(pull_number)
-    file_changed = client.pull_request_files(repo, pull_number)
+    file_changed = client.pull_request_files(repo, pull_number).map { |res| res[:filename] }
     puts "file changes for PR #{pull_number}: #{file_changed}"
     file_changed.include?(ENV['VERSION_FILE_PATH'])
   end
