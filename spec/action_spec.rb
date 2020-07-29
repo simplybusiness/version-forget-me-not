@@ -46,12 +46,15 @@ describe Action do # rubocop: disable Metrics/BlockLength
 
   describe '#version_file_changed?' do
     it 'return true if the github API response includes a version file' do
-      allow(client).to receive(:pull_request_files).and_return(%w[version.rb foo.txt])
+      allow(client).to receive(:pull_request_files).and_return([
+                                                                 { filename: 'version.rb' },
+                                                                 { filename: 'foo.txt' }
+                                                               ])
       expect(action.version_file_changed?(1)).to be true
     end
 
     it 'return false if the github API response does not include a version file' do
-      allow(client).to receive(:pull_request_files).and_return(['foo.txt'])
+      allow(client).to receive(:pull_request_files).and_return([{filename: 'foo.txt'}])
       expect(action.version_file_changed?(1)).to be false
     end
   end
