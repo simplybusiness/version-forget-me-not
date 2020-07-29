@@ -39,11 +39,9 @@ class Action
   private
 
   def fetch_version(ref:)
-    puts "#{client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref })}"
-    content = client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref }).content
-
+    content = Base64.decode64(client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref })['content'])
+    puts "content: #{content}"
     version = content.match(SEMVER_VERSION)[0].gsub(/\'|\"/, '')
-
     Gem::Version.new(version)
   end
 end
