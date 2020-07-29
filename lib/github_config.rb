@@ -9,6 +9,5 @@ class GithubConfig
   def initialize
     @client = Octokit::Client.new(access_token: ENV['BOT_TOKEN'])
     @event_payload = JSON.parse(File.read(ENV['GITHUB_EVENT_PATH']))
-    puts @event_payload
   end
 end
