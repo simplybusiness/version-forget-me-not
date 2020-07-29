@@ -6,21 +6,8 @@ require_relative '../lib/action'
 describe Action do
   let(:client) { instance_double(Octokit::Client) }
   let(:action) { Action.new(owner: 'simplybusiness', repo_name: 'test', client: client) }
+
   before { ENV['VERSION_FILE_PATH'] = 'version.rb' }
-
-  def mock_version_response(branch, version)
-    content = %(
-        module TestRepo
-          VERSION='#{version}'
-        end
-      )
-
-    allow(client).to receive(:contents).with(
-      'simplybusiness/test',
-      path: ENV['VERSION_FILE_PATH'],
-      query: { ref: branch }
-    ).and_return(content)
-  end
 
   describe '#version_file_changed?' do
     it 'return true if the github API response includes a version file' do
@@ -39,7 +26,7 @@ describe Action do
       mock_version_response('master', '1.2.3')
       mock_version_response('my_branch', '1.2.3')
 
-      expect(action.version_increased?(branch_name: 'my_branch')).to be_falsey
+      expect(action.version_increased?(branch_name: 'my_branch')).to be_false
     end
 
     it 'returns false if the branch is behind the trunk' do
@@ -69,5 +56,21 @@ describe Action do
 
       expect(action.version_increased?(branch_name: 'my_branch')).to be_truthy
     end
+  end
+
+  private
+
+  def mock_version_response(branch, version)
+    content = %(
+      module TestRepo
+        VERSION='#{version}'
+      end
+    )
+
+    allow(client).to receive(:contents).with(
+      'simplybusiness/test',
+      path: ENV['VERSION_FILE_PATH'],
+      query: { ref: branch }
+    ).and_return(content)
   end
 end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'octokit'
-require 'version'
 
 # Fetch and check the version
 class Action
@@ -22,13 +21,14 @@ class Action
   def version_increased?(branch_name:, trunk_name: 'master')
     branch_version = fetch_version(ref: branch_name)
     trunk_version = fetch_version(ref: trunk_name)
-    branch_version.compare_to(trunk_version) == branch_version
+    branch_version > trunk_version
   end
 
   private
 
   def fetch_version(ref:)
     content = client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref })
-    Version.new(content.match(SEMVER_VERSION)[0].gsub(/\'/, ''))
+    version = content.match(SEMVER_VERSION)[0].gsub(/\'/, '')
+    Gem::Version.new(version)
   end
 end
