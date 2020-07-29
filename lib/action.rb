@@ -40,3 +40,6 @@ class Action
     Gem::Version.new(version)
   end
 end
+
+action = Action.new(GithubConfig.new)
+puts "Version Changed: #{action.version_changed?}"
