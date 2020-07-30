@@ -59,40 +59,57 @@ describe Action do # rubocop: disable Metrics/BlockLength
     end
   end
 
-  describe '#version_increased?' do
-    it 'returns false if the versions match' do
-      mock_version_response('master', '1.2.3')
-      mock_version_response('my_branch', '1.2.3')
+  describe '#version_increased?' do # rubocop: disable Metrics/BlockLength
+    context 'when the content is a version file' do
+      it 'returns false if the versions match' do
+        mock_version_response('master', '1.2.3')
+        mock_version_response('my_branch', '1.2.3')
 
-      expect(action.version_increased?(branch_name: 'my_branch')).to be false
+        expect(action.version_increased?(branch_name: 'my_branch')).to be false
+      end
+
+      it 'returns false if the branch is behind the trunk' do
+        mock_version_response('master', '1.2.3')
+        mock_version_response('my_branch', '1.1.3')
+
+        expect(action.version_increased?(branch_name: 'my_branch')).to be false
+      end
+
+      it 'returns true for a patch version bump' do
+        mock_version_response('master', '1.2.3')
+        mock_version_response('my_branch', '1.2.4')
+
+        expect(action.version_increased?(branch_name: 'my_branch')).to be true
+      end
+
+      it 'returns true for a minor version bump' do
+        mock_version_response('master', '1.2.3')
+        mock_version_response('my_branch', '1.3.0')
+
+        expect(action.version_increased?(branch_name: 'my_branch')).to be true
+      end
+
+      it 'returns true for a major version bump' do
+        mock_version_response('master', '1.2.3')
+        mock_version_response('my_branch', '2.0.0')
+
+        expect(action.version_increased?(branch_name: 'my_branch')).to be true
+      end
     end
+    context 'when the content is a gemspec' do
+      it 'returns true for a major version bump in the gemspec' do
+        mock_gemspec_response('master', '1.2.3')
+        mock_gemspec_response('my_branch', '2.0.0')
 
-    it 'returns false if the branch is behind the trunk' do
-      mock_version_response('master', '1.2.3')
-      mock_version_response('my_branch', '1.1.3')
+        expect(action.version_increased?(branch_name: 'my_branch')).to be true
+      end
 
-      expect(action.version_increased?(branch_name: 'my_branch')).to be false
-    end
+      it 'returns false for a major version bump in the gemspec' do
+        mock_gemspec_response('master', '1.2.3')
+        mock_gemspec_response('my_branch', '1.0.0')
 
-    it 'returns true for a patch version bump' do
-      mock_version_response('master', '1.2.3')
-      mock_version_response('my_branch', '1.2.4')
-
-      expect(action.version_increased?(branch_name: 'my_branch')).to be true
-    end
-
-    it 'returns true for a minor version bump' do
-      mock_version_response('master', '1.2.3')
-      mock_version_response('my_branch', '1.3.0')
-
-      expect(action.version_increased?(branch_name: 'my_branch')).to be true
-    end
-
-    it 'returns true for a major version bump' do
-      mock_version_response('master', '1.2.3')
-      mock_version_response('my_branch', '2.0.0')
-
-      expect(action.version_increased?(branch_name: 'my_branch')).to be true
+        expect(action.version_increased?(branch_name: 'my_branch')).to be false
+      end
     end
   end
 
@@ -106,7 +123,25 @@ describe Action do # rubocop: disable Metrics/BlockLength
         end
       ))
     }
+    mock_response(content, branch)
+  end
+
+  def mock_gemspec_response(branch, version)
+    content = {
+      'content' => Base64.encode64(%(
+        Gem::Specification.new do |s|
+          s.name                  = "action-testing"
+          s.version               = "#{version}"
+          s.required_ruby_version = "2.6.5"
+        end
+      ))
+    }
+    mock_response(content, branch)
+  end
+
+  def mock_response(content, branch)
     allow(client).to receive(:contents)
-      .with('simplybusiness/test', path: ENV['VERSION_FILE_PATH'], query: { ref: branch }).and_return(content)
+      .with('simplybusiness/test', path: ENV['VERSION_FILE_PATH'], query: { ref: branch })
+      .and_return(content)
   end
 end
