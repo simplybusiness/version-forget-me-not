@@ -54,7 +54,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
     end
 
     it 'return false if the github API response does not include a version file' do
-      allow(client).to receive(:pull_request_files).and_return([{filename: 'foo.txt'}])
+      allow(client).to receive(:pull_request_files).and_return([{ filename: 'foo.txt' }])
       expect(action.version_file_changed?(1)).to be false
     end
   end
@@ -106,11 +106,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
         end
       ))
     }
-
-    allow(client).to receive(:contents).with(
-      'simplybusiness/test',
-      path: ENV['VERSION_FILE_PATH'],
-      query: { ref: branch }
-    ).and_return(content)
+    allow(client).to receive(:contents)
+      .with('simplybusiness/test', path: ENV['VERSION_FILE_PATH'], query: { ref: branch }).and_return(content)
   end
 end
