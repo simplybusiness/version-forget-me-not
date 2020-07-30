@@ -5,3 +5,4 @@ require_relative 'lib/github_config'
 
 result = Action.new(GithubConfig.new).version_changed?
 puts "Version Changed: #{result}"
+error 'Version is not changed' unless result
