@@ -6,8 +6,9 @@ require_relative 'config'
 class Action
   attr_reader :client, :repo, :pull_number, :head_branch, :base_branch, :file_path
 
-  SEMVER_VERSION = /["'][0-9]+\.[0-9]+\.[0-9]+["']/.freeze
-  GEMSPEC_VERSION = /\.version\s*=\s*["'][0-9]+\.[0-9]+\.[0-9]+["']/.freeze
+  SEMVER_VERSION =
+    /["'](0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?["']/.freeze # rubocop:disable Layout/LineLength
+  GEMSPEC_VERSION = Regexp.new(/\.version\s*=\s*/.to_s + SEMVER_VERSION.to_s).freeze
 
   def initialize(config)
     @client = config.client
