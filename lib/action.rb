@@ -40,7 +40,12 @@ class Action
 
   def fetch_version(ref:)
     content = Base64.decode64(client.contents(repo, path: file_path, query: { ref: ref })['content'])
-    version = content.match(SEMVER_VERSION)[0].gsub(/\'|\"/, '')
+    version = if file_path.end_with?('.gemspec')
+                spec = eval(content.untaint, binding) # rubocop:disable Security/Eval
+                spec.version
+              else
+                content.match(SEMVER_VERSION)[0].gsub(/\'|\"/, '')
+              end
     Gem::Version.new(version)
   end
 end
