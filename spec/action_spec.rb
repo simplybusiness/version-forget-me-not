@@ -58,58 +58,32 @@ describe Action do # rubocop: disable Metrics/BlockLength
     end
   end
 
-  describe '#version_increased?' do # rubocop: disable Metrics/BlockLength
-    context 'when the content is a version file' do
-      it 'returns false if the versions match' do
-        mock_version_response('master', '1.2.3')
-        mock_version_response('my_branch', '1.2.3')
+  describe '#version_increased?' do
+    RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
+      context 'when the content is a version file' do
+        it 'returns false if the versions match' do
+          mock_version_response('master', '1.2.3')
+          mock_version_response('my_branch', new_version)
 
-        expect(action.version_increased?(branch_name: 'my_branch')).to be false
+          expect(action.version_increased?(branch_name: 'my_branch')).to eq(result)
+        end
       end
 
-      it 'returns false if the branch is behind the trunk' do
-        mock_version_response('master', '1.2.3')
-        mock_version_response('my_branch', '1.1.3')
+      context 'when the content is a gemspec file' do
+        it 'returns false if the versions match' do
+          mock_gemspec_response('master', '1.2.3')
+          mock_gemspec_response('my_branch', new_version)
 
-        expect(action.version_increased?(branch_name: 'my_branch')).to be false
-      end
-
-      it 'returns true for a patch version bump' do
-        mock_version_response('master', '1.2.3')
-        mock_version_response('my_branch', '1.2.4')
-
-        expect(action.version_increased?(branch_name: 'my_branch')).to be true
-      end
-
-      it 'returns true for a minor version bump' do
-        mock_version_response('master', '1.2.3')
-        mock_version_response('my_branch', '1.3.0')
-
-        expect(action.version_increased?(branch_name: 'my_branch')).to be true
-      end
-
-      it 'returns true for a major version bump' do
-        mock_version_response('master', '1.2.3')
-        mock_version_response('my_branch', '2.0.0')
-
-        expect(action.version_increased?(branch_name: 'my_branch')).to be true
+          expect(action.version_increased?(branch_name: 'my_branch')).to eq(result)
+        end
       end
     end
-    context 'when the content is a gemspec' do
-      it 'returns true for a major version bump in the gemspec' do
-        mock_gemspec_response('master', '1.2.3')
-        mock_gemspec_response('my_branch', '2.0.0')
 
-        expect(action.version_increased?(branch_name: 'my_branch')).to be true
-      end
-
-      it 'returns false for a major version bump in the gemspec' do
-        mock_gemspec_response('master', '1.2.3')
-        mock_gemspec_response('my_branch', '1.0.0')
-
-        expect(action.version_increased?(branch_name: 'my_branch')).to be false
-      end
-    end
+    it_behaves_like 'version_increased? for all supported file types', '1.2.3', false
+    it_behaves_like 'version_increased? for all supported file types', '1.1.4', false
+    it_behaves_like 'version_increased? for all supported file types', '1.2.4', true
+    it_behaves_like 'version_increased? for all supported file types', '1.3.0', true
+    it_behaves_like 'version_increased? for all supported file types', '2.0.0', true
   end
 
   private
