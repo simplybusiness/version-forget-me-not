@@ -3,7 +3,7 @@
 require 'octokit'
 require 'json'
 # Github configurations
-class GithubConfig
+class Config
   attr_reader :client, :event_payload
 
   def initialize

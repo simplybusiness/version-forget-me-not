@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'github_config'
+require_relative 'config'
 
 # Fetch and check the version
 class Action
