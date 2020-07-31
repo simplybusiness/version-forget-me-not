@@ -39,7 +39,7 @@ class Action
   private
 
   def fetch_version(ref:)
-    content = Base64.decode64(client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref })['content'])
+    content = Base64.decode64(client.contents(repo, path: file_path, query: { ref: ref })['content'])
     match = content.match(GEMSPEC_VERSION) || content.match(SEMVER_VERSION)
 
     format_version(match)

@@ -10,6 +10,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
   let(:config) do
     OpenStruct.new(
       client: client,
+      file_path: 'version.rb',
       event_payload: {
         'repository' => { 'full_name' => 'simplybusiness/test' },
         'pull_request' => {
@@ -22,8 +23,6 @@ describe Action do # rubocop: disable Metrics/BlockLength
   end
 
   let(:action) { Action.new(config) }
-
-  before { ENV['VERSION_FILE_PATH'] = 'version.rb' }
 
   describe '#version_changed?' do
     it 'return false when version file not changed' do
@@ -141,7 +140,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
 
   def mock_response(content, branch)
     allow(client).to receive(:contents)
-      .with('simplybusiness/test', path: ENV['VERSION_FILE_PATH'], query: { ref: branch })
+      .with('simplybusiness/test', path: 'version.rb', query: { ref: branch })
       .and_return(content)
   end
 end
