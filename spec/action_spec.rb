@@ -104,8 +104,8 @@ describe Action do # rubocop: disable Metrics/BlockLength
       'content' => Base64.encode64(%(
         Gem::Specification.new do |s|
           s.name                  = "action-testing"
-          s.version               = "#{version}"
           s.required_ruby_version = "2.6.5"
+          s.version               = "#{version}"
         end
       ))
     }
