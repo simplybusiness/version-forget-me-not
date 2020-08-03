@@ -25,13 +25,23 @@ describe Action do # rubocop: disable Metrics/BlockLength
   let(:action) { Action.new(config) }
 
   describe '#check_version' do
-    it 'creates a success status when version is changed' do
+    it 'creates a success state when version is changed' do
       allow(action).to receive(:version_changed?).and_return(true)
       expect(client).to receive(:create_status).with('simplybusiness/test',
                                                      '1111',
                                                      'success',
                                                      context: 'version check',
                                                      description: 'version is changed')
+      action.check_version
+    end
+
+    it 'creates a failure state when version is changed' do
+      allow(action).to receive(:version_changed?).and_return(false)
+      expect(client).to receive(:create_status).with('simplybusiness/test',
+                                                     '1111',
+                                                     'failure',
+                                                     context: 'version check',
+                                                     description: 'Branch version is not changed')
       action.check_version
     end
   end

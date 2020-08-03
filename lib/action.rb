@@ -14,24 +14,19 @@ class Action
     @client = config.client
     @repo = config.event_payload['repository']['full_name']
     @file_path = config.file_path
-
-    config_pr = config.event_payload['pull_request']
-    @pull_number = config_pr['number']
-    @head_branch = config_pr['head']['ref']
-    @head_commit = config_pr['head']['sha']
-    @base_branch = config_pr['base']['ref']
+    assign_pr_attributes(config.event_payload['pull_request'])
   end
 
   def check_version
     if version_changed?
-      status = 'success'
+      state = 'success'
       description = 'version is changed'
     else
-      status = 'failure'
+      state = 'failure'
       description = 'Branch version is not changed'
     end
 
-    client.create_status(repo, head_commit, status, description: description, context: 'version check')
+    client.create_status(repo, head_commit, state, description: description, context: 'version check')
   end
 
   def version_changed?
@@ -62,5 +57,12 @@ class Action
 
   def format_version(version)
     Gem::Version.new(version[0].split('=').last.gsub(/\s/, '').gsub(/\'|\"/, ''))
+  end
+
+  def assign_pr_attributes(config)
+    @pull_number = config['number']
+    @head_branch = config['head']['ref']
+    @head_commit = config['head']['sha']
+    @base_branch = config['base']['ref']
   end
 end
