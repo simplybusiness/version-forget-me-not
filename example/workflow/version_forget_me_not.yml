@@ -16,12 +16,13 @@ jobs:
         with:
           repository: simplybusiness/version-forget-me-not
           ref: refs/tags/v1.0
-          token: ${{ secrets.BOT_TOKEN }}
+          # Do not put the actual secret here- only the name of the secret in your repo
+          token: ${{ secrets.PUT_YOUR_GITHUB_PAT_NAME_HERE }}
           path: './<YOUR_REPO_NAME_HERE>'
       - uses: ./
         env:
-          BOT_TOKEN: ${{secrets.BOT_TOKEN}}
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # It is the file path where you keep the version of gem.
           # It usually in the `lib/<gem name>/version.rb` or in the gemspec file.
-          VERSION_FILE_PATH: "<GEM_NAME>.gemspec"
+          VERSION_FILE_PATH: "<PATH>"
 
