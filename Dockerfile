@@ -12,6 +12,8 @@ COPY Gemfile* entrypoint.sh  action/
 
 COPY lib action/lib
 
+COPY run.rb action/
+
 WORKDIR action
 
 RUN bundle install --retry 3
