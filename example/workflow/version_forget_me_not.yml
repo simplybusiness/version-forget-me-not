@@ -1,0 +1,27 @@
+name: Check version
+
+on:
+  pull_request:
+    branches:
+      - master # default branch
+    types: [opened, synchronize]
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      # For private action we need to checkout the action repo.
+      # We can remove this once we make the action public.
+      - uses: actions/checkout@v1
+        with:
+          repository: simplybusiness/version-forget-me-not
+          ref: refs/tags/v1.0
+          token: ${{ secrets.BOT_TOKEN }}
+          path: './<YOUR_REPO_NAME_HERE>'
+      - uses: ./
+        env:
+          BOT_TOKEN: ${{secrets.BOT_TOKEN}}
+          # It is the file path where you keep the version of gem.
+          # It usually in the `lib/<gem name>/version.rb` or in the gemspec file.
+          VERSION_FILE_PATH: "<GEM_NAME>.gemspec"
+
