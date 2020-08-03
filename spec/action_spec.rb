@@ -15,7 +15,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
         'repository' => { 'full_name' => 'simplybusiness/test' },
         'pull_request' => {
           'number' => 1,
-          'head' => { 'branch' => 'my_branch' },
+          'head' => { 'branch' => 'my_branch', 'sha' => '1111' },
           'base' => { 'branch' => 'master' }
         }
       }
@@ -23,6 +23,18 @@ describe Action do # rubocop: disable Metrics/BlockLength
   end
 
   let(:action) { Action.new(config) }
+
+  describe '#check_version' do
+    it 'creates a success status when version is changed' do
+      allow(action).to receive(:version_changed?).and_return(true)
+      expect(client).to receive(:create_status).with('simplybusiness/test',
+                                                     '1111',
+                                                     'success',
+                                                     context: 'version check',
+                                                     description: 'version is changed')
+      action.check_version
+    end
+  end
 
   describe '#version_changed?' do
     it 'return false when version file not changed' do
