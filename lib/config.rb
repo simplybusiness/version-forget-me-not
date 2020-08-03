@@ -4,7 +4,7 @@ require 'octokit'
 require 'json'
 # Github configurations
 class Config
-  attr_reader :client, :event_payload
+  attr_reader :client, :event_payload, :file_path
 
   def initialize
     @client = Octokit::Client.new(access_token: ENV['BOT_TOKEN'])
