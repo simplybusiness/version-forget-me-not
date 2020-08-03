@@ -29,7 +29,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
                                                      '1111',
                                                      'success',
                                                      context: 'version check',
-                                                     description: 'version is changed')
+                                                     description: 'Version is changed')
       action.check_version
     end
 

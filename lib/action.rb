@@ -20,7 +20,7 @@ class Action
   def check_version
     if version_changed?
       state = 'success'
-      description = 'version is changed'
+      description = 'Version is changed'
     else
       state = 'failure'
       description = 'Branch version is not changed'
