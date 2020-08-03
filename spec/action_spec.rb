@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec'
-require 'octokit'
 require 'ostruct'
 require_relative '../lib/action'
 
