@@ -2,3 +2,8 @@
 
 # Version forget-me-not
 Github action for checking the version is updated in pull request.
+
+We often forget to change the version and merge the Pull request and later realized. 
+This action will remind that you forget to change the version.
+
+Here is an [example workflow](https://github.com/simplybusiness/version-forget-me-not/blob/example-workflow/example/workflow/version_forget_me_not.yml)
