@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec'
-require 'octokit'
 require 'ostruct'
 require_relative '../lib/action'
 
@@ -15,7 +13,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
         'repository' => { 'full_name' => 'simplybusiness/test' },
         'pull_request' => {
           'number' => 1,
-          'head' => { 'branch' => 'my_branch' },
+          'head' => { 'branch' => 'my_branch', 'sha' => '1111' },
           'base' => { 'branch' => 'master' }
         }
       }
@@ -23,6 +21,28 @@ describe Action do # rubocop: disable Metrics/BlockLength
   end
 
   let(:action) { Action.new(config) }
+
+  describe '#check_version' do
+    it 'creates a success state when version is changed' do
+      allow(action).to receive(:version_changed?).and_return(true)
+      expect(client).to receive(:create_status).with('simplybusiness/test',
+                                                     '1111',
+                                                     'success',
+                                                     context: 'version check',
+                                                     description: 'Version is changed')
+      action.check_version
+    end
+
+    it 'creates a failure state when version is changed' do
+      allow(action).to receive(:version_changed?).and_return(false)
+      expect(client).to receive(:create_status).with('simplybusiness/test',
+                                                     '1111',
+                                                     'failure',
+                                                     context: 'version check',
+                                                     description: 'Branch version is not changed')
+      action.check_version
+    end
+  end
 
   describe '#version_changed?' do
     it 'return false when version file not changed' do

@@ -4,7 +4,7 @@ require_relative 'config'
 
 # Fetch and check the version
 class Action
-  attr_reader :client, :repo, :pull_number, :head_branch, :base_branch, :file_path
+  attr_reader :client, :repo, :pull_number, :head_branch, :head_commit, :base_branch, :file_path
 
   SEMVER_VERSION =
     /["'](0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?["']/.freeze # rubocop:disable Layout/LineLength
@@ -13,11 +13,20 @@ class Action
   def initialize(config)
     @client = config.client
     @repo = config.event_payload['repository']['full_name']
-    config_pr = config.event_payload['pull_request']
-    @pull_number = config_pr['number']
-    @head_branch = config_pr['head']['ref']
-    @base_branch = config_pr['base']['ref']
     @file_path = config.file_path
+    assign_pr_attributes(config.event_payload['pull_request'])
+  end
+
+  def check_version
+    if version_changed?
+      state = 'success'
+      description = 'Version is changed'
+    else
+      state = 'failure'
+      description = 'Branch version is not changed'
+    end
+
+    client.create_status(repo, head_commit, state, description: description, context: 'version check')
   end
 
   def version_changed?
@@ -48,5 +57,12 @@ class Action
 
   def format_version(version)
     Gem::Version.new(version[0].split('=').last.gsub(/\s/, '').gsub(/\'|\"/, ''))
+  end
+
+  def assign_pr_attributes(config)
+    @pull_number = config['number']
+    @head_branch = config['head']['ref']
+    @head_commit = config['head']['sha']
+    @base_branch = config['base']['ref']
   end
 end
