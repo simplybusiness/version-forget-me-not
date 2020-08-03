@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-require_relative 'github_config'
+require_relative 'config'
 
 # Fetch and check the version
 class Action
-  attr_reader :client, :repo, :pull_number, :head_branch, :base_branch
+  attr_reader :client, :repo, :pull_number, :head_branch, :base_branch, :file_path
 
   SEMVER_VERSION =
     /["'](0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?["']/.freeze # rubocop:disable Layout/LineLength
+  GEMSPEC_VERSION = Regexp.new(/\.version\s*=\s*/.to_s + SEMVER_VERSION.to_s).freeze
 
   def initialize(config)
     @client = config.client
@@ -16,6 +17,7 @@ class Action
     @pull_number = config_pr['number']
     @head_branch = config_pr['head']['ref']
     @base_branch = config_pr['base']['ref']
+    @file_path = config.file_path
   end
 
   def version_changed?
@@ -24,7 +26,7 @@ class Action
 
   def version_file_changed?(pull_number)
     file_changed = client.pull_request_files(repo, pull_number).map { |res| res[:filename] }
-    file_changed.include?(ENV['VERSION_FILE_PATH'])
+    file_changed.include?(file_path)
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')
@@ -38,8 +40,13 @@ class Action
   private
 
   def fetch_version(ref:)
-    content = Base64.decode64(client.contents(repo, path: ENV['VERSION_FILE_PATH'], query: { ref: ref })['content'])
-    version = content.match(SEMVER_VERSION)[0].gsub(/\'|\"/, '')
-    Gem::Version.new(version)
+    content = Base64.decode64(client.contents(repo, path: file_path, query: { ref: ref })['content'])
+    match = content.match(GEMSPEC_VERSION) || content.match(SEMVER_VERSION)
+
+    format_version(match)
+  end
+
+  def format_version(version)
+    Gem::Version.new(version[0].split('=').last.gsub(/\s/, '').gsub(/\'|\"/, ''))
   end
 end

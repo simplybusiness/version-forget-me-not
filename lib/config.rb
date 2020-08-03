@@ -3,11 +3,12 @@
 require 'octokit'
 require 'json'
 # Github configurations
-class GithubConfig
-  attr_reader :client, :event_payload
+class Config
+  attr_reader :client, :event_payload, :file_path
 
   def initialize
     @client = Octokit::Client.new(access_token: ENV['BOT_TOKEN'])
     @event_payload = JSON.parse(File.read(ENV['GITHUB_EVENT_PATH']))
+    @file_path = ENV['VERSION_FILE_PATH']
   end
 end
