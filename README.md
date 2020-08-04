@@ -2,3 +2,7 @@
 
 # Version forget-me-not
 Github action for checking the version is updated in pull request.
+
+The aim is to remind engineers to update the semantic version before merging, since this step is often forgotten and requires a retroactive fix. 
+
+Here is an [example workflow](https://github.com/simplybusiness/version-forget-me-not/blob/example-workflow/example/workflow/version_forget_me_not.yml)
