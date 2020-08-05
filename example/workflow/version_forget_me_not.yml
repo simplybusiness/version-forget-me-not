@@ -5,6 +5,8 @@ on:
     branches:
       - master # default branch
     types: [opened, synchronize]
+    # Event will only trigger if anything change in the lib and its sub-directories
+    paths: 'lib/**'  # optional
 jobs:
   build:
     runs-on: ubuntu-18.04
