@@ -1,6 +1,6 @@
 FROM ruby:2.6.5
 
-LABEL maintainer="simplybusiness/silversmiths <applicationtooling@simplybusiness.co.uk>"
+LABEL maintainer="simplybusiness <opensourcetech+githubaction@simplybusiness.co.uk>"
 
 ENV BUNDLER_VERSION="2.1.4"
 

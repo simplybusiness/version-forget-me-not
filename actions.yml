@@ -1,5 +1,5 @@
 name: 'Version check ruby'
-author: applicationtooling@simplybusiness.co.uk
+author: opensourcetech+githubaction@simplybusiness.co.uk
 description: 'Check for a difference in the version of the gem'
 branding:
   icon: code

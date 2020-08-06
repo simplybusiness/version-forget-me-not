@@ -10,19 +10,10 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      # For private action we need to checkout the action repo.
-      # We can remove this once we make the action public.
-      - uses: actions/checkout@v1
-        with:
-          repository: simplybusiness/version-forget-me-not
-          ref: refs/tags/v1.0
-          # Do not put the actual secret here- only the name of the secret in your repo
-          token: ${{ secrets.PUT_YOUR_GITHUB_PAT_NAME_HERE }}
-          path: './<YOUR_REPO_NAME_HERE>'
       - uses: ./
         env:
-          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # It is the file path where you keep the version of gem.
-          # It usually in the `lib/<gem name>/version.rb` or in the gemspec file.
+          ACCESS_TOKEN: <YOUR TOKEN>
+          # The file path where you keep the version of gem.
+          # It is usually `lib/<gem name>/version.rb` or in the gemspec file.
           VERSION_FILE_PATH: "<PATH>"
 
