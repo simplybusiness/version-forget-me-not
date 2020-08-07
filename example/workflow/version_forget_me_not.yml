@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: ./
         env:
-          ACCESS_TOKEN: <YOUR TOKEN>
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # The file path where you keep the version of gem.
           # It is usually `lib/<gem name>/version.rb` or in the gemspec file.
           VERSION_FILE_PATH: "<PATH>"
