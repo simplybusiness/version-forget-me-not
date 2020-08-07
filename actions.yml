@@ -1,6 +1,6 @@
-name: 'Version check ruby'
+name: 'Version Forget Me Not'
 author: opensourcetech+githubaction@simplybusiness.co.uk
-description: 'Check for a difference in the version of the gem'
+description: 'Ruby project utility for checking for a difference in the semantic version of a gem'
 branding:
   icon: code
   color: red
