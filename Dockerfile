@@ -20,6 +20,8 @@ WORKDIR action
 
 RUN bundle install --retry 3
 
-RUN chmod +x entrypoint.sh
+RUN chmod +x run.rb
 
-ENTRYPOINT ["/action/entrypoint.sh"]
+RUN bundle exec ruby run.rb
+
+#ENTRYPOINT ["/action/entrypoint.sh"]
