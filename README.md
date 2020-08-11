@@ -5,4 +5,4 @@ A Github Action for Ruby projects that checks that the semantic version has been
 
 The aim is to remind engineers to update the version before merging, since this step is often forgotten and requires a retroactive fix.
 
-Here is an [example workflow](https://github.com/simplybusiness/version-forget-me-not/blob/example-workflow/example/workflow/version_forget_me_not.yml)
+Here is an [example workflow](https://github.com/simplybusiness/version-forget-me-not/blob/master/example/workflow/version_forget_me_not.yml)
