@@ -8,7 +8,7 @@ RUN gem install bundler --version "${BUNDLER_VERSION}"
 
 RUN mkdir -p action
 
-COPY Gemfile* entrypoint.sh  action/
+COPY Gemfile entrypoint.sh  action/
 
 COPY lib action/lib
 
