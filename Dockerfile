@@ -22,6 +22,6 @@ RUN bundle install --retry 3
 
 RUN chmod +x run.rb
 
-RUN bundle exec ruby run.rb
+#RUN bundle exec ruby run.rb
 
-#ENTRYPOINT ["/action/entrypoint.sh"]
+ENTRYPOINT bundle exec ruby run.rb
