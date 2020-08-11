@@ -1,5 +1,5 @@
 name: 'Version Forget Me Not'
-author: opensourcetech+githubaction@simplybusiness.co.uk
+author: 'opensourcetech@simplybusiness.co.uk'
 description: 'Ruby project utility for checking for a difference in the semantic version of a gem'
 branding:
   icon: code
