@@ -6,17 +6,17 @@ ENV BUNDLER_VERSION="2.1.4"
 
 RUN gem install bundler --version "${BUNDLER_VERSION}"
 
-RUN mkdir -p action
+RUN mkdir -p github/workspace
 
-COPY Gemfile action/
+COPY Gemfile github/workspace/
 
-COPY entrypoint.sh action/
+COPY entrypoint.sh github/workspace/
 
-COPY lib action/lib
+COPY lib github/workspace/lib
 
-COPY run.rb action/
+COPY run.rb github/workspace/
 
-WORKDIR action
+WORKDIR github/workspace
 
 RUN bundle install --retry 3
 
