@@ -1,13 +1,7 @@
 #!/bin/bash
 
-echo 'hellooooo'
-
 set -e
 
-echo 'hellooooo'
-
-bundle install
-
-echo 'hellooooo'
+ls -ltr
 
 bundle exec ruby run.rb
