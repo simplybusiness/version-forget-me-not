@@ -21,6 +21,6 @@ COPY run.rb ./
 
 RUN bundle install --retry 3
 
-RUN chmod +x /runner/entrypoint.sh
+RUN chmod +x /runner/action/entrypoint.sh
 
-ENTRYPOINT ["/runner/entrypoint.sh"]
+ENTRYPOINT ["/runner/action/entrypoint.sh"]
