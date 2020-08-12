@@ -13,8 +13,6 @@ WORKDIR /runner/action
 
 COPY Gemfile* ./
 
-COPY entrypoint.sh ./
-
 COPY lib ./lib
 
 COPY run.rb ./
