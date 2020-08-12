@@ -23,6 +23,6 @@ RUN bundle install --retry 3
 
 ENV BUNDLE_GEMFILE /runner/action/Gemfile
 
-RUN chmod +x /runner/action/entrypoint.sh
+RUN chmod +x /runner/action/run.rb
 
-ENTRYPOINT ["/runner/action/entrypoint.sh"]
+ENTRYPOINT ["ruby", "/runner/action/run.rb"]
