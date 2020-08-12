@@ -25,6 +25,4 @@ ENV BUNDLE_GEMFILE /runner/action/Gemfile
 
 RUN chmod +x /runner/action/entrypoint.sh
 
-WORKDIR /data
-
 ENTRYPOINT ["/runner/action/entrypoint.sh"]
