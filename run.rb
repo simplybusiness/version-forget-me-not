@@ -2,6 +2,4 @@
 
 require_relative 'lib/action'
 
-puts 'hello world!'
-
 Action.new(Config.new).check_version
