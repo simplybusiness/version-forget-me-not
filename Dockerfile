@@ -22,4 +22,4 @@ RUN bundle install --retry 3
 
 RUN chmod +x /github/workspace/run.rb
 
-ENTRYPOINT ["ruby", "./run.rb"]
+ENTRYPOINT ["ruby", "run.rb"]
