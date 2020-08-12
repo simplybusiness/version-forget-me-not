@@ -6,20 +6,22 @@ ENV BUNDLER_VERSION="2.1.4"
 
 RUN gem install bundler --version "${BUNDLER_VERSION}"
 
-RUN mkdir -p /github/workspace
+WORKDIR /runner
 
-COPY Gemfile /github/workspace/
+RUN mkdir -p action
 
-COPY entrypoint.sh /github/workspace/
+COPY Gemfile action/
 
-COPY lib /github/workspace/lib
+COPY entrypoint.sh action/
 
-COPY run.rb /github/workspace/
+COPY lib action/lib
 
-WORKDIR /github/workspace
+COPY run.rb action/
+
+
 
 RUN bundle install --retry 3
 
-RUN chmod +x /github/workspace/run.rb
+RUN chmod +x /runner/action/entrypoint.sh
 
-ENTRYPOINT ["ruby", "run.rb"]
+ENTRYPOINT ["/runner/action/entrypoint.sh"]
