@@ -2,7 +2,8 @@
 
 source 'https://rubygems.org'
 
-gem 'octokit'
+gem 'octokit', '4.14.0' 
+
 group :development, :test do
   gem 'pry'
   gem 'rspec'
