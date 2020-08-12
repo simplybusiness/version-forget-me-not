@@ -7,23 +7,23 @@ ENV BUNDLER_VERSION="2.1.4"
 RUN gem install bundler --version "${BUNDLER_VERSION}"
 
 
-RUN mkdir -p /runner/action
+# RUN mkdir -p /runner/action
 
-WORKDIR /runner/action
-
-
-COPY Gemfile action/
-
-COPY entrypoint.sh action/
-
-COPY lib action/lib
-
-COPY run.rb action/
+WORKDIR /runner
 
 
+# COPY Gemfile action/
 
-RUN bundle install --retry 3
+COPY entrypoint.sh ./
 
-RUN chmod +x /runner/action/entrypoint.sh
+# COPY lib action/lib
+
+# COPY run.rb action/
+
+
+
+# RUN bundle install --retry 3
+
+RUN chmod +x /runner/entrypoint.sh
 
 ENTRYPOINT ["/runner/action/entrypoint.sh"]
