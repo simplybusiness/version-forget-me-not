@@ -26,4 +26,4 @@ COPY entrypoint.sh ./
 
 RUN chmod +x /runner/entrypoint.sh
 
-ENTRYPOINT ["/runner/action/entrypoint.sh"]
+ENTRYPOINT ["/runner/entrypoint.sh"]
