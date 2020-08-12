@@ -6,9 +6,11 @@ ENV BUNDLER_VERSION="2.1.4"
 
 RUN gem install bundler --version "${BUNDLER_VERSION}"
 
-WORKDIR /runner
 
-RUN mkdir -p action
+RUN mkdir -p /runner/action
+
+WORKDIR /runner/action
+
 
 COPY Gemfile action/
 
