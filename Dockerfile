@@ -20,6 +20,6 @@ WORKDIR /github/workspace
 
 RUN bundle install --retry 3
 
-RUN chmod +x run.rb
+RUN chmod +x /github/workspace/run.rb
 
-ENTRYPOINT ruby run.rb
+ENTRYPOINT ruby /github/workspace/run.rb
