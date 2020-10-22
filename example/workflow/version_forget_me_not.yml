@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      - uses: ./
+      - uses: simplybusiness/version-forget-me-not@v1
         env:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # The file path where you keep the version of gem.
