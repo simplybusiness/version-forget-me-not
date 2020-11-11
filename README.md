@@ -1,6 +1,6 @@
-# Version Forget-Me-Not
-
 ![What it looks like once installation is complete](images/what-it-looks-like.png)
+
+# Version Forget-Me-Not
 
 A Github Action for Ruby projects that checks that the semantic version has been updated in a pull request.
 
