@@ -39,7 +39,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
                                                      '1111',
                                                      'failure',
                                                      context: 'version check',
-                                                     description: 'Branch version is not changed')
+                                                     description: 'Branch version is not changed in version.rb')
       action.check_version
     end
   end
