@@ -1,6 +1,6 @@
 name: 'Version Forget-Me-Not'
 author: 'opensourcetech@simplybusiness.co.uk'
-description: 'Ruby project utility for checking for a difference in the semantic version of a gem'
+description: 'Check that a Ruby Gem's version has been bumped or updated on a Pull Request'
 branding:
   icon: code
   color: red
