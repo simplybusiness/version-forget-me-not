@@ -1,6 +1,6 @@
 name: 'Version Forget-Me-Not'
 author: 'opensourcetech@simplybusiness.co.uk'
-description: 'Check if a Ruby Gem's version has been bumped or updated on a Pull Request'
+description: 'Check and ensure that a Ruby Gem's version has been bumped or updated on a Pull Request'
 branding:
   icon: code
   color: red
