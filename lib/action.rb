@@ -23,7 +23,7 @@ class Action
       description = 'Version is changed'
     else
       state = 'failure'
-      description = 'Branch version is not changed'
+      description = "Branch version is not changed in #{file_path}"
     end
 
     client.create_status(repo, head_commit, state, description: description, context: 'version check')
