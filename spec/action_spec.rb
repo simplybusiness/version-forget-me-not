@@ -78,7 +78,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
     end
   end
 
-  describe '#version_increased?' do
+  describe '#version_increased?' do # rubocop:disable Metrics/BlockLength
     RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
       context 'when the content is a version file' do
         it 'returns false if the versions match' do

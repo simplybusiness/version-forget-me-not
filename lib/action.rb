@@ -39,19 +39,12 @@ class Action
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')
-    branch_version = nil
-    begin
-      branch_version = fetch_version(ref: branch_name)
-    rescue Octokit::NotFound
-    end
+    branch_version = fetch_version_safe(ref: branch_name)
     trunk_version = fetch_version(ref: trunk_name)
-    if branch_version
-      puts "branch version: #{branch_version}"
-    else
-      puts "branch version: file not found, presumed name changed"
-    end
+    puts branch_version ? "branch version: #{branch_version}" : 'branch version: file not found, presumed name changed'
     puts "trunk version: #{trunk_version}"
-    branch_version == nil || branch_version > trunk_version
+
+    branch_version.nil? || branch_version > trunk_version
   end
 
   private
@@ -61,6 +54,12 @@ class Action
     match = content.match(GEMSPEC_VERSION) || content.match(SEMVER_VERSION)
 
     format_version(match)
+  end
+
+  def fetch_version_safe(ref:)
+    fetch_version(ref: ref)
+  rescue Octokit::NotFound
+    nil
   end
 
   def format_version(version)
