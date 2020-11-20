@@ -106,7 +106,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
     it_behaves_like 'version_increased? for all supported file types', '2.0.0', true
 
     context 'when version file name has changed so old version file not found' do
-      it 'returns true if old version file not found' do
+      it 'returns true' do
         mock_version_response('master', '1.2.3')
         mock_version_response_error('my_branch')
 
