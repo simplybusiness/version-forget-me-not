@@ -33,7 +33,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
       action.check_version
     end
 
-    it 'creates a failure state when version is changed' do
+    it 'creates a failure state when version is not changed' do
       allow(action).to receive(:version_changed?).and_return(false)
       expect(client).to receive(:create_status).with('simplybusiness/test',
                                                      '1111',
@@ -78,7 +78,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
     end
   end
 
-  describe '#version_increased?' do
+  describe '#version_increased?' do # rubocop:disable Metrics/BlockLength
     RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
       context 'when the content is a version file' do
         it 'returns false if the versions match' do
@@ -104,6 +104,24 @@ describe Action do # rubocop: disable Metrics/BlockLength
     it_behaves_like 'version_increased? for all supported file types', '1.2.4', true
     it_behaves_like 'version_increased? for all supported file types', '1.3.0', true
     it_behaves_like 'version_increased? for all supported file types', '2.0.0', true
+
+    context 'when version file name has changed so old version file not found' do
+      it 'returns true' do
+        mock_version_response('master', '1.2.3')
+        mock_version_response_error('my_branch')
+
+        expect(action.version_increased?(branch_name: 'my_branch')).to eq(true)
+      end
+    end
+
+    context 'when version file not found' do
+      it 'raises exception' do
+        mock_version_response_error('master')
+        mock_version_response('my_branch', '1.2.3')
+
+        expect { action.version_increased?(branch_name: 'my_branch') }.to raise_error(Octokit::NotFound)
+      end
+    end
   end
 
   private
@@ -136,5 +154,11 @@ describe Action do # rubocop: disable Metrics/BlockLength
     allow(client).to receive(:contents)
       .with('simplybusiness/test', path: 'version.rb', query: { ref: branch })
       .and_return(content)
+  end
+
+  def mock_version_response_error(branch)
+    allow(client).to receive(:contents)
+      .with('simplybusiness/test', path: 'version.rb', query: { ref: branch })
+      .and_raise(Octokit::NotFound)
   end
 end
