@@ -115,7 +115,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
     end
 
     context 'when version file not found' do
-      it 'fails when version file not found' do
+      it 'raises exception' do
         mock_version_response_error('master')
         mock_version_response('my_branch', '1.2.3')
 
