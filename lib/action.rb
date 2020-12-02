@@ -25,10 +25,14 @@ class Action
       description = 'Updated'
     else
       state = 'failure'
-      description = "Update: #{file_path}".truncate(140)
+      description = failed_status_description
     end
 
     client.create_status(repo, head_commit, state, description: description, context: 'Gem Version')
+  end
+
+  def failed_status_description
+    "Update: #{file_path}".truncate(140)
   end
 
   def version_changed?
