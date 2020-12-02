@@ -2,7 +2,9 @@
 
 source 'https://rubygems.org'
 
+gem 'activesupport'
 gem 'octokit'
+
 group :development, :test do
   gem 'pry'
   gem 'rspec'

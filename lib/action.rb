@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'config'
+require 'active_support'
+require 'active_support/core_ext/string/filters'
 
 # Fetch and check the version
 class Action
@@ -23,7 +25,7 @@ class Action
       description = 'Updated'
     else
       state = 'failure'
-      description = "Update `#{file_path}`"
+      description = "Update: #{file_path}".truncate(140)
     end
 
     client.create_status(repo, head_commit, state, description: description, context: 'Gem Version')

@@ -39,7 +39,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
                                                      '1111',
                                                      'failure',
                                                      context: 'Gem Version',
-                                                     description: 'Update `version.rb`')
+                                                     description: "Update: #{config.file_path}")
       action.check_version
     end
   end
