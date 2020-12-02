@@ -34,8 +34,8 @@ The aim is to remind engineers to update the version before merging, since this 
 
 1. Create a new Pull Request to kick off this GitHub Action. You’ll notice it show up at the bottom of your pull request.
 
-   ![Version check failing after initial installation](images/after-initial-installation.png)
+   ![Gem Version status check failing after initial installation](images/after-initial-installation.png)
 
-1. Go to Settings → Branches → Your default branch → Mark `version check` as required.
+1. Go to Settings → Branches → Your default branch → Mark `Gem Version` as required.
 
    ![The required status check that needs to be ticked](images/required-status-checks.png)

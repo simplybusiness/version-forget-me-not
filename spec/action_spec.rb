@@ -28,8 +28,8 @@ describe Action do # rubocop: disable Metrics/BlockLength
       expect(client).to receive(:create_status).with('simplybusiness/test',
                                                      '1111',
                                                      'success',
-                                                     context: 'version check',
-                                                     description: 'Version is changed')
+                                                     context: 'Gem Version',
+                                                     description: 'Updated')
       action.check_version
     end
 
@@ -38,8 +38,8 @@ describe Action do # rubocop: disable Metrics/BlockLength
       expect(client).to receive(:create_status).with('simplybusiness/test',
                                                      '1111',
                                                      'failure',
-                                                     context: 'version check',
-                                                     description: 'Branch version is not changed')
+                                                     context: 'Gem Version',
+                                                     description: 'Update `version.rb`')
       action.check_version
     end
   end
