@@ -1,4 +1,4 @@
-![What it looks like once installation is complete](images/what-it-looks-like.png)
+![What it looks like once installation is complete](images/what-it-looks-like-failing.png)
 
 # Version Forget-Me-Not
 
