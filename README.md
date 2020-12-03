@@ -1,4 +1,4 @@
-![What it looks like once installation is complete](images/what-it-looks-like.png)
+![What it looks like once installation is complete](images/what-it-looks-like-failing.png)
 
 # Version Forget-Me-Not
 
@@ -26,7 +26,7 @@ The aim is to remind engineers to update the version before merging, since this 
          - uses: simplybusiness/version-forget-me-not@v1
            env:
              ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-             # The file path where you keep the version of gem.
+             # Change to the file path where you keep the Gem's version.
              # It is usually `lib/<gem name>/version.rb` or in the gemspec file.
              VERSION_FILE_PATH: "<PATH>"
    
