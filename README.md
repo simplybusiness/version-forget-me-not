@@ -11,7 +11,7 @@ The aim is to remind engineers to update the version before merging, since this 
 1. Create a file called `.github/workflows/version-forget-me-not.yml` in your Gem's repository with the following YAML (modify as instructed in the comments):
 
    ```yaml
-   name: Check version
+   name: Version Forget-Me-Not
    
    on:
      pull_request:

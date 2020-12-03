@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'config'
-require 'active_support'
-require 'active_support/core_ext/string/filters'
 
 # Fetch and check the version
 class Action
@@ -32,7 +30,9 @@ class Action
   end
 
   def failed_status_description
-    "Update: #{file_path}".truncate(140)
+    text = "Update: #{file_path}"
+    text = text[0...137] + '...' unless text.length <= 140
+    text
   end
 
   def version_changed?

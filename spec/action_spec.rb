@@ -140,6 +140,15 @@ describe Action do # rubocop: disable Metrics/BlockLength
       expect(description).to eq('Update: a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder' \
                                 '/somewhere/in/this/repo/oh/my/gosh/its/still/going/wh...')
     end
+
+    it "doesn't truncate if the description is exactly 140 characters" do
+      config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder/somewhere/' \
+                         'in/this/repo/ohh/my/gosh/its/still/version.rb'
+      description = action.failed_status_description
+      expect(description.length).to eq(140)
+      expect(description).to eq('Update: a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder' \
+                                '/somewhere/in/this/repo/ohh/my/gosh/its/still/version.rb')
+    end
   end
 
   private
