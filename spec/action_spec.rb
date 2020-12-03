@@ -146,8 +146,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
                          'in/this/repo/ohh/my/gosh/its/still/version.rb'
       description = action.failed_status_description
       expect(description.length).to eq(140)
-      expect(description).to eq('Update: a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder' \
-                                '/somewhere/in/this/repo/ohh/my/gosh/its/still/version.rb')
+      expect(description).to eq("Update: #{config.file_path}")
     end
   end
 
