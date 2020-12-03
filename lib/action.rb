@@ -20,13 +20,19 @@ class Action
   def check_version
     if version_changed?
       state = 'success'
-      description = 'Version is changed'
+      description = 'Updated'
     else
       state = 'failure'
-      description = 'Branch version is not changed'
+      description = failed_status_description
     end
 
-    client.create_status(repo, head_commit, state, description: description, context: 'version check')
+    client.create_status(repo, head_commit, state, description: description, context: 'Gem Version')
+  end
+
+  def failed_status_description
+    text = "Update: #{file_path}"
+    text = text[0...137] + '...' unless text.length <= 140
+    text
   end
 
   def version_changed?
