@@ -20,7 +20,7 @@ The aim is to remind engineers to update the version before merging, since this 
        types: [opened, synchronize]
    jobs:
      build:
-       runs-on: ubuntu-18.04
+       runs-on: ubuntu-20.04
    
        steps:
          - uses: simplybusiness/version-forget-me-not@v2
