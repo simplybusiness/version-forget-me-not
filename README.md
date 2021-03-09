@@ -2,7 +2,7 @@
 
 # Version Forget-Me-Not
 
-![Forget-me-not flower](images/flower.jpg)
+![Forget-me-not flower by Tauno Erik](images/flower.jpg)
 
 A Github Action for Ruby projects that checks that the semantic version has been updated in a pull request.
 
