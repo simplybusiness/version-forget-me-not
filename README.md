@@ -2,6 +2,8 @@
 
 # Version Forget-Me-Not
 
+![Forget-me-not flower](images/flower.jpg)
+
 A Github Action for Ruby projects that checks that the semantic version has been updated in a pull request.
 
 The aim is to remind engineers to update the version before merging, since this step is often forgotten and requires a retroactive fix.
