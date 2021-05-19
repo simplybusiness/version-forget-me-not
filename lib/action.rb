@@ -46,8 +46,8 @@ class Action
 
   def version_increased?(branch_name:, trunk_name: 'master')
     branch_version = fetch_version_safe(ref: branch_name)
-    trunk_version = fetch_version(ref: trunk_name)
-    puts branch_version ? "branch version: #{branch_version}" : 'branch version: file not found, presumed name changed'
+    trunk_version = fetch_version_safe(ref: trunk_name)
+    puts "branch version: #{branch_version}"
     puts "trunk version: #{trunk_version}"
 
     branch_version.nil? || branch_version > trunk_version
