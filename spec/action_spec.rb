@@ -42,6 +42,17 @@ describe Action do # rubocop: disable Metrics/BlockLength
                                                      description: "Update: #{config.file_path}")
       action.check_version
     end
+
+    it 'creates a failure state when version file is not found' do
+      allow(action).to receive(:version_changed?).and_return(false)
+      allow(action).to receive(:failed_description).and_return('Version file not found on version.rb')
+      expect(client).to receive(:create_status).with('simplybusiness/test',
+                                                     '1111',
+                                                     'failure',
+                                                     context: 'Gem Version',
+                                                     description: 'Version file not found on version.rb')
+      action.check_version
+    end
   end
 
   describe '#version_changed?' do
@@ -106,24 +117,20 @@ describe Action do # rubocop: disable Metrics/BlockLength
     it_behaves_like 'version_increased? for all supported file types', '2.0.0', true
 
     context 'when version file name has changed so old version file not found' do
-      it 'create failure status with a description \' version file not found\'' do
+      it 'return false' do
         mock_version_response('master', '1.2.3')
         mock_version_response_error('my_branch')
-        expect(client).to receive(:create_status).with('simplybusiness/test',
-                                                       '1111',
-                                                       'failure',
-                                                       context: 'Gem Version',
-                                                       description: 'Version file not found version.rb')
-        expect(action.version_increased?(branch_name: 'my_branch')).to eq(true)
+        expect(action.version_increased?(branch_name: 'my_branch')).to eq(false)
       end
     end
 
     context 'when version file not found' do
-      it 'raises exception' do
+      it 'rescue exception and set failed description' do
         mock_version_response_error('master')
         mock_version_response('my_branch', '1.2.3')
 
-        expect { action.version_increased?(branch_name: 'my_branch') }.to raise_error(Octokit::NotFound)
+        expect { action.version_increased?(branch_name: 'my_branch') }.to_not raise_error
+        expect(action.failed_description).to eq('Version file not found on version.rb')
       end
     end
   end

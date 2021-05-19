@@ -4,8 +4,7 @@ require_relative 'config'
 
 # Fetch and check the version
 class Action
-  attr_reader :client, :repo, :pull_number, :head_branch, :head_commit, :base_branch, :file_path
-  attr_accessor :failed_description
+  attr_reader :client, :repo, :pull_number, :head_branch, :head_commit, :base_branch, :file_path, :failed_description
 
   SEMVER_VERSION =
     /["'](0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?["']/.freeze # rubocop:disable Layout/LineLength
@@ -31,7 +30,7 @@ class Action
   end
 
   def failed_status_description
-    text = failed_description
+    text = failed_description || "Update: #{file_path}"
     text = text[0...137] + '...' unless text.length <= 140
     text
   end
@@ -46,16 +45,12 @@ class Action
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')
-    if (branch_version = fetch_version_safe(ref: branch_name)).nil?
-      self.failed_description = "Version file not found on #{file_path}"
-      return false
-    elsif (trunk_version = fetch_version_safe(ref: trunk_name)).nil?
-      puts 'trunk version: file not found, presumed name changed'
-      return true
-    end
+    branch_version = fetch_version_safe(ref: branch_name)
+    trunk_version = fetch_version_safe(ref: trunk_name)
+    return false if branch_version.nil? || trunk_version.nil?
 
-    puts "trunk version: #{trunk_version}\n branch version: #{branch_version}"
-    self.failed_description = "Update: #{file_path}"
+    puts "trunk version: #{trunk_version}"
+    puts "branch version: #{branch_version}"
     branch_version > trunk_version
   end
 
@@ -71,6 +66,7 @@ class Action
   def fetch_version_safe(ref:)
     fetch_version(ref: ref)
   rescue Octokit::NotFound
+    @failed_description = "Version file not found on #{file_path}"
     nil
   end
 
