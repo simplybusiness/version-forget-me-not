@@ -3,7 +3,7 @@
 require 'ostruct'
 require_relative '../lib/action'
 
-describe Action do # rubocop: disable Metrics/BlockLength
+describe Action do
   let(:client) { instance_double(Octokit::Client) }
   let(:config) do
     OpenStruct.new(
@@ -89,7 +89,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
     end
   end
 
-  describe '#version_increased?' do # rubocop:disable Metrics/BlockLength
+  describe '#version_increased?' do
     RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
       context 'when the content is a version file' do
         it 'returns false if the versions match' do
