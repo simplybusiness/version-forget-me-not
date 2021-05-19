@@ -130,7 +130,7 @@ describe Action do # rubocop: disable Metrics/BlockLength
         mock_version_response('my_branch', '1.2.3')
 
         expect { action.version_increased?(branch_name: 'my_branch') }.to_not raise_error
-        expect(action.failed_description).to eq('Version file not found on version.rb')
+        expect(action.failed_description).to eq('Version file not found on master branch version.rb')
       end
     end
   end

@@ -66,7 +66,7 @@ class Action
   def fetch_version_safe(ref:)
     fetch_version(ref: ref)
   rescue Octokit::NotFound
-    @failed_description = "Version file not found on #{file_path}"
+    @failed_description = "Version file not found on #{ref} branch #{file_path}"
     nil
   end
 
