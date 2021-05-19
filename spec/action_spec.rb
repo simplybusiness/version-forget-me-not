@@ -101,18 +101,12 @@ describe Action do
     end
   end
 
-  describe "The failed status check's description" do
-    it 'has the version file path' do
-      config.file_path = 'path/to/version.rb'
-      description = action.failed_status_description
-      expect(description.length).to be < 140
-      expect(description).to eq("Update: #{config.file_path}")
-    end
-
+  describe 'Message' do
     it 'truncates to 140 characters if needed' do
       config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder/somewhere/' \
                          'in/this/repo/oh/my/gosh/its/still/going/wherever/could/the/version/be/oh/found/it/version.rb'
-      description = action.failed_status_description
+      message = "Update: #{config.file_path}"
+      description = action.send(:truncate_message, message)
       expect(description.length).to eq(140)
       expect(description).to eq('Update: a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder' \
                                 '/somewhere/in/this/repo/oh/my/gosh/its/still/going/wh...')
@@ -121,7 +115,8 @@ describe Action do
     it "doesn't truncate if the description is exactly 140 characters" do
       config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder/somewhere/' \
                          'in/this/repo/ohh/my/gosh/its/still/version.rb'
-      description = action.failed_status_description
+      message = "Update: #{config.file_path}"
+      description = action.send(:truncate_message, message)
       expect(description.length).to eq(140)
       expect(description).to eq("Update: #{config.file_path}")
     end
