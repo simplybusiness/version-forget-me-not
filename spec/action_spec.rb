@@ -106,10 +106,14 @@ describe Action do # rubocop: disable Metrics/BlockLength
     it_behaves_like 'version_increased? for all supported file types', '2.0.0', true
 
     context 'when version file name has changed so old version file not found' do
-      it 'returns true' do
+      it 'create failure status with a description \' version file not found\'' do
         mock_version_response('master', '1.2.3')
         mock_version_response_error('my_branch')
-
+        expect(client).to receive(:create_status).with('simplybusiness/test',
+                                                       '1111',
+                                                       'failure',
+                                                       context: 'Gem Version',
+                                                       description: 'Version file not found version.rb')
         expect(action.version_increased?(branch_name: 'my_branch')).to eq(true)
       end
     end

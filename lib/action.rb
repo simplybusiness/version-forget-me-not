@@ -65,7 +65,8 @@ class Action
   def fetch_version_safe(ref:)
     fetch_version(ref: ref)
   rescue Octokit::NotFound
-    nil
+    description = "Version file not found #{file_path}"
+    client.create_status(repo, head_commit, 'failure', description: description, context: 'Gem Version')
   end
 
   def format_version(version)
