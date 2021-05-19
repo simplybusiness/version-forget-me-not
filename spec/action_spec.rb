@@ -24,7 +24,7 @@ describe Action do
 
   describe '#check_version' do
     it 'creates a success state when version is changed' do
-      allow(action).to receive(:version_changed?).and_return(true)
+      allow(action).to receive(:version_increased?).and_return(true)
       expect(client).to receive(:create_status).with('simplybusiness/test',
                                                      '1111',
                                                      'success',
@@ -34,7 +34,7 @@ describe Action do
     end
 
     it 'creates a failure state when version is not changed' do
-      allow(action).to receive(:version_changed?).and_return(false)
+      allow(action).to receive(:version_increased?).and_return(false)
       expect(client).to receive(:create_status).with('simplybusiness/test',
                                                      '1111',
                                                      'failure',
@@ -44,7 +44,7 @@ describe Action do
     end
 
     it 'creates a failure state when version file is not found' do
-      allow(action).to receive(:version_changed?).and_return(false)
+      allow(action).to receive(:version_increased?).and_return(false)
       allow(action).to receive(:failed_description).and_return('Version file not found on version.rb')
       expect(client).to receive(:create_status).with('simplybusiness/test',
                                                      '1111',
@@ -52,40 +52,6 @@ describe Action do
                                                      context: 'Gem Version',
                                                      description: 'Version file not found on version.rb')
       action.check_version
-    end
-  end
-
-  describe '#version_changed?' do
-    it 'return false when version file not changed' do
-      allow(action).to receive(:version_file_changed?).and_return(false)
-      expect(action.version_changed?).to be false
-    end
-
-    it 'return false when version is not increased' do
-      allow(action).to receive(:version_file_changed?).and_return(true)
-      allow(action).to receive(:version_increased?).and_return(false)
-      expect(action.version_changed?).to be false
-    end
-
-    it 'return true when version file and version both changed' do
-      allow(action).to receive(:version_file_changed?).and_return(true)
-      allow(action).to receive(:version_increased?).and_return(true)
-      expect(action.version_changed?).to be true
-    end
-  end
-
-  describe '#version_file_changed?' do
-    it 'return true if the github API response includes a version file' do
-      allow(client).to receive(:pull_request_files).and_return([
-                                                                 { filename: 'version.rb' },
-                                                                 { filename: 'foo.txt' }
-                                                               ])
-      expect(action.version_file_changed?(1)).to be true
-    end
-
-    it 'return false if the github API response does not include a version file' do
-      allow(client).to receive(:pull_request_files).and_return([{ filename: 'foo.txt' }])
-      expect(action.version_file_changed?(1)).to be false
     end
   end
 

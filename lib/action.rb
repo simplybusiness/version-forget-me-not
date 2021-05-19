@@ -18,7 +18,7 @@ class Action
   end
 
   def check_version
-    if version_changed?
+    if version_increased?(branch_name: head_branch, trunk_name: base_branch)
       state = 'success'
       description = 'Updated'
     else
@@ -33,15 +33,6 @@ class Action
     text = failed_description || "Update: #{file_path}"
     text = text[0...137] + '...' unless text.length <= 140
     text
-  end
-
-  def version_changed?
-    version_file_changed?(pull_number) && version_increased?(branch_name: head_branch, trunk_name: base_branch)
-  end
-
-  def version_file_changed?(pull_number)
-    file_changed = client.pull_request_files(repo, pull_number).map { |res| res[:filename] }
-    file_changed.include?(file_path)
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')
