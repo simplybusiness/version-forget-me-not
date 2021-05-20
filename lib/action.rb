@@ -23,16 +23,11 @@ class Action
       description = 'Updated'
     else
       state = 'failure'
-      description = failed_status_description
+      message = failed_description || "Update: #{file_path}"
+      description = truncate_message(message)
     end
 
     client.create_status(repo, head_commit, state, description: description, context: 'Gem Version')
-  end
-
-  def failed_status_description
-    text = failed_description || "Update: #{file_path}"
-    text = text[0...137] + '...' unless text.length <= 140
-    text
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')
@@ -70,5 +65,9 @@ class Action
     @head_branch = config['head']['ref']
     @head_commit = config['head']['sha']
     @base_branch = config['base']['ref']
+  end
+
+  def truncate_message(text)
+    text.length <= 140 ? text : "#{text[0...137]}..."
   end
 end
