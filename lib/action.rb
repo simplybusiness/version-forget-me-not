@@ -68,7 +68,6 @@ class Action
   end
 
   def truncate_message(text)
-    text = text[0...137] + '...' unless text.length <= 140
-    text
+   text.length <= 140 ? text : text[0...137] + '...' 
   end
 end
