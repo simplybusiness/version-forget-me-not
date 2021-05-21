@@ -25,7 +25,7 @@ The aim is to remind engineers to update the version before merging, since this 
        runs-on: ubuntu-20.04
    
        steps:
-         - uses: simplybusiness/version-forget-me-not@v2
+         - uses: simplybusiness/version-forget-me-not@v2.1.0
            env:
              ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
              # Change to the file path where you keep the Gem's version.
