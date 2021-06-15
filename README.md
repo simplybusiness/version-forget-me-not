@@ -2,6 +2,8 @@
 
 # Version Forget-Me-Not
 
+![Forget-me-not flower by Tauno Erik](images/flower.jpg)
+
 A Github Action for Ruby projects that checks that the semantic version has been updated in a pull request.
 
 The aim is to remind engineers to update the version before merging, since this step is often forgotten and requires a retroactive fix.
@@ -20,10 +22,10 @@ The aim is to remind engineers to update the version before merging, since this 
        types: [opened, synchronize]
    jobs:
      build:
-       runs-on: ubuntu-18.04
+       runs-on: ubuntu-20.04
    
        steps:
-         - uses: simplybusiness/version-forget-me-not@v2
+         - uses: simplybusiness/version-forget-me-not@v2.1.0
            env:
              ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
              # Change to the file path where you keep the Gem's version.
