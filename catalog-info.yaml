@@ -1,0 +1,8 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: version-forget-me-not
+  description: Github action for checking the version is updated in pull request
+spec:
+  type: service
+  lifecycle: production
