@@ -77,14 +77,14 @@ GEM
     sawyer (0.8.2)
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)
-    simplycop (1.7.5)
+    simplycop (1.8.1)
       rubocop (~> 1.12.1)
       rubocop-rails (~> 2.9.0)
       rubocop-rspec (~> 2.2.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
-    zeitwerk (2.4.2)
+    zeitwerk (2.5.1)
 
 PLATFORMS
   ruby
