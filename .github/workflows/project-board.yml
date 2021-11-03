@@ -1,0 +1,20 @@
+name: Automatically add new Issues to Silversmith's GitHub project board
+# https://github.com/orgs/simplybusiness/projects/3
+# New issues in this repository will be added to the board.
+# Inspired by https://github.com/backstage/backstage/blob/master/.github/workflows/techdocs-project-board.yml
+on:
+  issues:
+    types: [opened, reopened]
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  assign_issue_to_project:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'sbbnwjenkins' }}
+    name: Triage
+    steps:
+      - name: Assign new issue to Incoming
+        uses: srggrs/assign-one-project-github-action@1.2.0
+        with:
+          project: "https://github.com/orgs/simplybusiness/projects/3"
+          column_name: "Incoming"
