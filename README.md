@@ -26,7 +26,6 @@ The aim is to remind engineers to update the version before merging, since this 
    jobs:
      build:
        runs-on: ubuntu-20.04
-      
        steps:
          - uses: simplybusiness/version-forget-me-not@v2.1.0
            env:
