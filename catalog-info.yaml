@@ -4,5 +4,5 @@ metadata:
   name: version-forget-me-not
   description: Github action for checking the version is updated in pull request
 spec:
-  type: service
+  type: github action
   lifecycle: production
