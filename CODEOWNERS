@@ -2,3 +2,4 @@
 # More information: https://help.github.com/articles/about-codeowners/
 * @simplybusiness/silversmiths 
 
+Gemfile*  @simplybusiness/silversmiths @sb-silversmiths-bot
