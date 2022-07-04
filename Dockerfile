@@ -1,11 +1,8 @@
-FROM ruby:2.6.5
+FROM ruby:3.0.3
 
 LABEL maintainer="simplybusiness <opensourcetech@simplybusiness.co.uk>"
 
-ENV BUNDLER_VERSION="2.1.4"
-
-RUN gem install bundler --version "${BUNDLER_VERSION}"
-
+RUN gem update --system
 
 RUN mkdir -p /runner/action
 
