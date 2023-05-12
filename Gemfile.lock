@@ -16,6 +16,8 @@ GEM
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
+    faraday-retry (2.1.0)
+      faraday (~> 2.0)
     i18n (1.13.0)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
@@ -89,10 +91,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  faraday-retry (~> 2.1)
   octokit
   pry
   rspec
   simplycop
 
 BUNDLED WITH
-   2.3.17
+   2.4.12

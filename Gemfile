@@ -9,3 +9,5 @@ group :development, :test do
   gem 'rspec'
   gem 'simplycop'
 end
+
+gem "faraday-retry", "~> 2.1"
