@@ -10,4 +10,4 @@ group :development, :test do
   gem 'simplycop'
 end
 
-gem 'faraday-retry', '~> 2.1'
+gem 'faraday-retry', '~> 2.2'
