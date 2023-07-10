@@ -25,6 +25,7 @@ class Action
       state = 'failure'
       message = failed_description || "Update: #{file_path}"
       description = truncate_message(message)
+      puts "::error path#{file_path}=title=Failure::#{message}"
     end
 
     client.create_status(repo, head_commit, state, description: description, context: 'Gem Version')
@@ -35,8 +36,8 @@ class Action
     trunk_version = fetch_version_safe(ref: trunk_name)
     return false if branch_version.nil? || trunk_version.nil?
 
-    puts "trunk version: #{trunk_version}"
-    puts "branch version: #{branch_version}"
+    puts "::notice title=Trunk version::trunk version: #{trunk_version}"
+    puts "::notice title=Branch version::branch version: #{branch_version}"
     branch_version > trunk_version
   end
 
