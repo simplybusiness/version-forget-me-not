@@ -2,5 +2,5 @@
 # More information: https://help.github.com/articles/about-codeowners/
 * @simplybusiness/silversmiths 
 
-Gemfile*  @simplybusiness/silversmiths @sb-silversmiths-bot
-.github/workflows/ @simplybusiness/silversmiths @sb-silversmiths-bot
+Gemfile*  @simplybusiness/silversmiths @sb-dependabot
+.github/workflows/ @simplybusiness/silversmiths @sb-dependabot
