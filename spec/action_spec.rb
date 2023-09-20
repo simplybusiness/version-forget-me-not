@@ -44,8 +44,10 @@ describe Action do
     end
 
     it 'creates a failure state when version file is not found' do
-      allow(action).to receive(:version_increased?).and_return(false)
-      allow(action).to receive(:failed_description).and_return('Version file not found on version.rb')
+      allow(action).to receive_messages(
+        version_increased?: false, 
+        failed_description: 'Version file not found on version.rb'
+        )
       expect(client).to receive(:create_status).with('simplybusiness/test',
                                                      '1111',
                                                      'failure',
@@ -86,7 +88,7 @@ describe Action do
       it 'return false' do
         mock_version_response('master', '1.2.3')
         mock_version_response_error('my_branch')
-        expect(action.version_increased?(branch_name: 'my_branch')).to eq(false)
+        expect(action.version_increased?(branch_name: 'my_branch')).to be(false)
       end
     end
 
