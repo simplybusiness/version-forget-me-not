@@ -25,32 +25,40 @@ describe Action do
   describe '#check_version' do
     it 'creates a success state when version is changed' do
       allow(action).to receive(:version_increased?).and_return(true)
-      expect(client).to receive(:create_status).with('simplybusiness/test',
-                                                     '1111',
-                                                     'success',
-                                                     context: 'Gem Version',
-                                                     description: 'Updated')
+      expect(client).to receive(:create_status).with(
+        'simplybusiness/test',
+        '1111',
+        'success',
+        context: 'Gem Version',
+        description: 'Updated'
+      )
       action.check_version
     end
 
     it 'creates a failure state when version is not changed' do
       allow(action).to receive(:version_increased?).and_return(false)
-      expect(client).to receive(:create_status).with('simplybusiness/test',
-                                                     '1111',
-                                                     'failure',
-                                                     context: 'Gem Version',
-                                                     description: "Update: #{config.file_path}")
+      expect(client).to receive(:create_status).with(
+        'simplybusiness/test',
+        '1111',
+        'failure',
+        context: 'Gem Version',
+        description: "Update: #{config.file_path}"
+      )
       action.check_version
     end
 
     it 'creates a failure state when version file is not found' do
-      allow(action).to receive(:version_increased?).and_return(false)
-      allow(action).to receive(:failed_description).and_return('Version file not found on version.rb')
-      expect(client).to receive(:create_status).with('simplybusiness/test',
-                                                     '1111',
-                                                     'failure',
-                                                     context: 'Gem Version',
-                                                     description: 'Version file not found on version.rb')
+      allow(action).to receive_messages(
+        version_increased?: false,
+        failed_description: 'Version file not found on version.rb'
+      )
+      expect(client).to receive(:create_status).with(
+        'simplybusiness/test',
+        '1111',
+        'failure',
+        context: 'Gem Version',
+        description: 'Version file not found on version.rb'
+      )
       action.check_version
     end
   end
@@ -86,7 +94,7 @@ describe Action do
       it 'return false' do
         mock_version_response('master', '1.2.3')
         mock_version_response_error('my_branch')
-        expect(action.version_increased?(branch_name: 'my_branch')).to eq(false)
+        expect(action.version_increased?(branch_name: 'my_branch')).to be(false)
       end
     end
 
@@ -108,8 +116,10 @@ describe Action do
       message = "Update: #{config.file_path}"
       description = action.send(:truncate_message, message)
       expect(description.length).to eq(140)
-      expect(description).to eq('Update: a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder' \
-                                '/somewhere/in/this/repo/oh/my/gosh/its/still/going/wh...')
+      expect(description).to eq(
+        'Update: a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder' \
+        '/somewhere/in/this/repo/oh/my/gosh/its/still/going/wh...'
+      )
     end
 
     it "doesn't truncate if the description is exactly 140 characters" do
@@ -126,24 +136,28 @@ describe Action do
 
   def mock_version_response(branch, version)
     content = {
-      'content' => Base64.encode64(%(
+      'content' => Base64.encode64(
+        %(
         module TestRepo
           VERSION='#{version}'
         end
-      ))
+      )
+      )
     }
     mock_response(content, branch)
   end
 
   def mock_gemspec_response(branch, version)
     content = {
-      'content' => Base64.encode64(%(
+      'content' => Base64.encode64(
+        %(
         Gem::Specification.new do |s|
           s.name                  = "action-testing"
           s.required_ruby_version = "2.6.5"
           s.version               = "#{version}"
         end
-      ))
+      )
+      )
     }
     mock_response(content, branch)
   end
