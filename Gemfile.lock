@@ -19,6 +19,9 @@ GEM
     faraday-net_http (3.0.2)
     faraday-retry (2.2.0)
       faraday (~> 2.0)
+    git (1.18.0)
+      addressable (~> 2.8)
+      rchardet (~> 1.8)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
@@ -39,6 +42,7 @@ GEM
     racc (1.7.1)
     rack (3.0.8)
     rainbow (3.1.1)
+    rchardet (1.8.0)
     regexp_parser (2.8.1)
     rexml (3.2.6)
     rspec (3.12.0)
@@ -102,10 +106,11 @@ PLATFORMS
 
 DEPENDENCIES
   faraday-retry (~> 2.2)
+  git
   octokit
   pry
   rspec
   simplycop
 
 BUNDLED WITH
-   2.4.12
+   2.3.26
