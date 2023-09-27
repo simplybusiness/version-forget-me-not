@@ -4,7 +4,9 @@ require_relative 'config'
 
 # Fetch and check the version
 class Action
-  attr_reader :client, :repo, :pull_number, :head_branch, :head_commit, :base_branch, :file_path, :failed_description, :gem_directory_path
+
+  attr_reader :client, :repo, :pull_number, :head_branch, :head_commit, :base_branch, :file_path, :failed_description,
+              :gem_directory_path
 
   SEMVER_VERSION =
     /["'](0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?["']/ # rubocop:disable Layout/LineLength
@@ -45,7 +47,6 @@ class Action
   private
 
   def check_for_diff
-    
     gem_directory_path
   end
 
