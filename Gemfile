@@ -2,8 +2,8 @@
 
 source 'https://rubygems.org'
 
-gem 'octokit'
 gem 'git'
+gem 'octokit'
 
 group :development, :test do
   gem 'pry'
