@@ -3,13 +3,15 @@
 require 'ostruct'
 require_relative '../lib/action'
 
+Config = Struct.new(:client, :file_path, :event_payload)
+
 describe Action do
   let(:client) { instance_double(Octokit::Client) }
   let(:config) do
-    OpenStruct.new(
-      client: client,
-      file_path: 'version.rb',
-      event_payload: {
+    Config.new(
+      client,
+      'version.rb',
+      {
         'repository' => { 'full_name' => 'simplybusiness/test' },
         'pull_request' => {
           'number' => 1,
