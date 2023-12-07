@@ -1,31 +1,45 @@
-# Application-Name development guides
+![What it looks like once installation is complete](images/what-it-looks-like-failing.png)
 
-<!-- This index.md defines the home page for the application / service documentation in Backstage. Add links to the main topics in the `\docs` folder on this page, replacing the placeholder sections below. You can also create a sidebar navigation for Backstage docs by configuring `mkdocs.yaml` to include the main sections of the docs. See [Publishing docs in SB Backstage](https://github.com/simplybusiness/know/blob/master/docs/_contributors-guide/backstage_techdocs_guide.md). -->
+# Version Forget-Me-Not
 
-<!-- Markdown files in the repository root folder are ignored in Backstage. You'll need to link to this index.md from the README.md in the repository root. For an example, see [Rater README.md](https://github.com/simplybusiness/rater). Any significant content in the README.md in the repository root should be moved to the '/docs` folder. -->
+![Forget-me-not flower by Tauno Erik](images/flower.jpg)
 
-## About <Application/Service-Name>
+A Github Action for Ruby projects that checks that the semantic version has been updated in a pull request.
 
-A short description of the application or service, or link to the document that describes it.
+The aim is to remind engineers to update the version before merging, since this step is often forgotten and requires a retroactive fix.
 
-## Environment setup
+## Installation
 
-- Link to document on how to run the application or service locally.
+1. Create a file called `.github/workflows/version-forget-me-not.yml` in your Gem's repository with the following YAML (modify as instructed in the comments):
 
-## Guides
+   ```yaml
+   name: Version Forget-Me-Not
+   
+   on:
+     pull_request:
+       branches:
+         - main # Change if your default branch is different
+       types: [opened, synchronize]
+   permissions:
+     contents: read
+     statuses: write
+   jobs:
+     build:
+       runs-on: ubuntu-20.04
+       steps:
+         - uses: simplybusiness/version-forget-me-not@v2.1.0
+           env:
+             ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+             # Change to the file path where you keep the Gem's version.
+             # It is usually `lib/<gem name>/version.rb` or in the gemspec file.
+             VERSION_FILE_PATH: "<PATH>"
+   
+   ```
 
-<!-- Links to the main topics, grouped by area, e.g. application features, how-to guides, deployment, testing. -->
+1. Create a new Pull Request to kick off this GitHub Action. You’ll notice it show up at the bottom of your pull request.
 
-### Topic area 1
+   ![Gem Version status check failing after initial installation](images/after-initial-installation.png)
 
-- Link to document `'(*.md)`
-- Link to document `'(*.md)`
-- Link to document `'(*.md)`
+1. Go to Settings → Branches → Your default branch → Mark `Gem Version` as required.
 
-### Topic area 2
-
-- Link to document `'(*.md)`
-
-## Related information
-
-- Link to other documents related to this application / service
+   ![The required status check that needs to be ticked](images/required-status-checks.png)
