@@ -4,6 +4,8 @@ metadata:
   name: version-forget-me-not
   title: Version Forget-Me-Not
   description: Github action for checking the version is updated in pull request
+  annotations:
+    backstage.io/techdocs-ref: dir:.
 spec:
   type: github action
   lifecycle: production
