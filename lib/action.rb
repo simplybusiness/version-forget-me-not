@@ -29,7 +29,7 @@ class Action
       puts "::error path#{file_path}=title=Failure::#{message}"
     end
 
-    client.create_status(repo, head_commit, state, description: description, context: 'Gem Version')
+    client.create_status(repo, head_commit, state, description: description, context: 'Version check')
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')

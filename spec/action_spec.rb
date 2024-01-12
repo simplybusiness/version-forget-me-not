@@ -31,7 +31,7 @@ describe Action do
         'simplybusiness/test',
         '1111',
         'success',
-        context: 'Gem Version',
+        context: 'Version check',
         description: 'Updated'
       )
       action.check_version
@@ -43,7 +43,7 @@ describe Action do
         'simplybusiness/test',
         '1111',
         'failure',
-        context: 'Gem Version',
+        context: 'Version check',
         description: "Update: #{config.file_path}"
       )
       action.check_version
@@ -58,7 +58,7 @@ describe Action do
         'simplybusiness/test',
         '1111',
         'failure',
-        context: 'Gem Version',
+        context: 'Version check',
         description: 'Version file not found on version.rb'
       )
       action.check_version
