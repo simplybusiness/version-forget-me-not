@@ -4,13 +4,15 @@
 
 ![Forget-me-not flower by Tauno Erik](images/flower.jpg)
 
-A Github Action for Ruby projects that checks that the semantic version has been updated in a pull request.
+A Github Action that checks that the semantic version has been updated in a pull request.
 
 The aim is to remind engineers to update the version before merging, since this step is often forgotten and requires a retroactive fix.
 
+It is operational on Ruby, Python and Javascript projects.
+
 ## Installation
 
-1. Create a file called `.github/workflows/version-forget-me-not.yml` in your Gem's repository with the following YAML (modify as instructed in the comments):
+1. Create a file called `.github/workflows/version-forget-me-not.yml` in your repository with the following YAML (modify as instructed in the comments):
 
    ```yaml
    name: Version Forget-Me-Not
@@ -27,11 +29,13 @@ The aim is to remind engineers to update the version before merging, since this 
      build:
        runs-on: ubuntu-20.04
        steps:
-         - uses: simplybusiness/version-forget-me-not@v2.1.0
+         - uses: simplybusiness/version-forget-me-not@v2
            env:
              ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-             # Change to the file path where you keep the Gem's version.
-             # It is usually `lib/<gem name>/version.rb` or in the gemspec file.
+             # Change to the file path where you keep the version.
+             # It is usually `lib/<gem name>/version.rb` or in the gemspec file for Ruby.
+             # It is usually 'package.json' for Javascript/Typescript.
+             # It can often be 'pyproject.toml' for Python.
              VERSION_FILE_PATH: "<PATH>"
    
    ```
@@ -40,6 +44,6 @@ The aim is to remind engineers to update the version before merging, since this 
 
    ![Gem Version status check failing after initial installation](images/after-initial-installation.png)
 
-1. Go to Settings → Branches → Your default branch → Mark `Gem Version` as required.
+1. Go to Settings → Branches → Your default branch → Mark `Version check` as required.
 
    ![The required status check that needs to be ticked](images/required-status-checks.png)

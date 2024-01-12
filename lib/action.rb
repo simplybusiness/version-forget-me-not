@@ -6,9 +6,10 @@ require_relative 'config'
 class Action
   attr_reader :client, :repo, :pull_number, :head_branch, :head_commit, :base_branch, :file_path, :failed_description
 
-  SEMVER_VERSION =
-    /["'](0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?["']/ # rubocop:disable Layout/LineLength
-  GEMSPEC_VERSION = Regexp.new(/\.version\s*=\s*/.to_s + SEMVER_VERSION.to_s).freeze
+  SEMVER = /["']*(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?["']*/ # rubocop:disable Layout/LineLength
+  SEPARATOR = /\s*[:=]\s*/
+  VERSION_KEY = /(^|\.|\s)version/
+  VERSION_SETTING = Regexp.new(VERSION_KEY.source + SEPARATOR.source + SEMVER.source, Regexp::IGNORECASE).freeze
 
   def initialize(config)
     @client = config.client
@@ -28,7 +29,7 @@ class Action
       puts "::error path#{file_path}=title=Failure::#{message}"
     end
 
-    client.create_status(repo, head_commit, state, description: description, context: 'Gem Version')
+    client.create_status(repo, head_commit, state, description: description, context: 'Version check')
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')
@@ -45,7 +46,7 @@ class Action
 
   def fetch_version(ref:)
     content = Base64.decode64(client.contents(repo, path: file_path, query: { ref: ref })['content'])
-    match = content.match(GEMSPEC_VERSION) || content.match(SEMVER_VERSION)
+    match = content.match(VERSION_SETTING)
 
     format_version(match)
   end
@@ -58,7 +59,7 @@ class Action
   end
 
   def format_version(version)
-    Gem::Version.new(version[0].split('=').last.gsub(/\s/, '').gsub(/'|"/, ''))
+    Gem::Version.new(version[0].split(SEPARATOR).last.gsub(/\s/, '').gsub(/'|"/, ''))
   end
 
   def assign_pr_attributes(config)
