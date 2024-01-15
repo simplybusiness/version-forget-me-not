@@ -89,34 +89,160 @@ describe Action do
   end
 
   describe '#fetch_version' do
-    let(:config) do
-      Config.new(
-        client,
-        'version.rb',
-        event_payload
-      )
-    end
-    let(:action) { Action.new(config) }
-    let(:repo) { 'simplybusiness/test' }
-    let(:file_path) { 'version.rb' }
+    let(:repo) { 'simplybusiness/test' }  
     let(:ref) { 'my_branch' }
-    let(:content) { "module TestRepo\n  VERSION='1.2.3'\nend\n" }
     let(:decoded_content) { Base64.encode64(content) }
     let(:expected_version) { '1.2.3' }
 
-    before do
-      allow(client).to receive(:contents)
-        .with(repo, path: file_path, query: { ref: ref })
-        .and_return('content' => decoded_content)
+    context 'when the version file is a version.rb' do
+      let(:config) do
+        Config.new(
+          client,
+          'version.rb',
+          event_payload
+        )
+      end
+      let(:action) { Action.new(config) }
+      let(:file_path) { 'version.rb' }
+      let(:content) { "module TestRepo\n  VERSION='#{expected_version}'\nend\n" }
+
+      before do
+        allow(client).to receive(:contents)
+          .with(repo, path: file_path, query: { ref: ref })
+          .and_return('content' => decoded_content)
+      end
+
+      it 'returns the version' do
+        expect(action.fetch_version(ref: ref)).to eq(expected_version)
+      end
     end
 
-    context 'when the version file exists' do
+    context 'when the version file is a version.rb' do
+      let(:config) do
+        Config.new(
+          client,
+          'version.rb',
+          event_payload
+        )
+      end
+      let(:action) { Action.new(config) }
+      let(:file_path) { 'version.rb' }
+      let(:content) { "module TestRepo\n  VERSION='#{expected_version}'\nend\n" }
+
+      before do
+        allow(client).to receive(:contents)
+          .with(repo, path: file_path, query: { ref: ref })
+          .and_return('content' => decoded_content)
+      end
+
+      it 'returns the version' do
+        expect(action.fetch_version(ref: ref)).to eq(expected_version)
+      end
+    end
+
+
+    context 'when the version file is a gemspec' do
+      let(:config) do
+        Config.new(
+          client,
+          'action-testing.gemspec',
+          event_payload
+        )
+      end
+      let(:action) { Action.new(config) }
+      let(:file_path) { 'action-testing.gemspec' }
+      let(:content) do
+        %(
+        Gem::Specification.new do |s|
+          s.name                  = "action-testing"
+          s.required_ruby_version = "2.6.5"
+          s.version               = "#{expected_version}"
+        end
+      )
+      end
+
+      before do
+        allow(client).to receive(:contents)
+          .with(repo, path: file_path, query: { ref: ref })
+          .and_return('content' => decoded_content)
+      end
+
+      it 'returns the version' do
+        expect(action.fetch_version(ref: ref)).to eq(expected_version)
+      end
+    end
+
+    context 'when the version file is a package.json' do
+      let(:config) do
+        Config.new(
+          client,
+          'package.json',
+          event_payload
+        )
+      end
+      let(:action) { Action.new(config) }
+      let(:file_path) { 'package.json' }
+      let(:content) do
+        %(
+          {
+            "name": "action-testing",
+            "version": "#{expected_version}"
+          }
+        )
+      end
+
+      before do
+        allow(client).to receive(:contents)
+          .with(repo, path: file_path, query: { ref: ref })
+          .and_return('content' => decoded_content)
+      end
+
+      it 'returns the version' do
+        expect(action.fetch_version(ref: ref)).to eq(expected_version)
+      end
+    end
+
+    context 'when the version file is a pyproject.toml' do
+      let(:config) do
+        Config.new(
+          client,
+          'pyproject.toml',
+          event_payload
+        )
+      end
+      let(:action) { Action.new(config) }
+      let(:file_path) { 'pyproject.toml' }
+      let(:content) do
+        %(
+          [tool.poetry]
+          name = "action-testing"
+          version = "#{expected_version}"
+        )
+      end
+
+      before do
+        allow(client).to receive(:contents)
+          .with(repo, path: file_path, query: { ref: ref })
+          .and_return('content' => decoded_content)
+      end
+
       it 'returns the version' do
         expect(action.fetch_version(ref: ref)).to eq(expected_version)
       end
     end
 
     context 'when the version file does not exist' do
+      let(:config) do
+        Config.new(
+          client,
+          'version.rb',
+          event_payload
+        )
+      end
+      let(:action) { Action.new(config) }
+      let(:file_path) { 'version.rb' }
+      let(:content) { "module TestRepo\n  VERSION='#{expected_version}'\nend\n" }
+
       before do
         allow(client).to receive(:contents)
           .with(repo, path: file_path, query: { ref: ref })
