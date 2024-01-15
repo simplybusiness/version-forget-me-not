@@ -275,20 +275,20 @@ describe Action do
     )
   end
 
-  def mock_package_json_content(_version)
+  def mock_package_json_content(version)
     %(
       {
         "name": "action-testing",
-        "version": "1.2.3"
+        "version": "#{version}"
       }
     )
   end
 
-  def mock_pyproject_toml_content(_version)
+  def mock_pyproject_toml_content(version)
     %(
       [tool.poetry]
       name = "action-testing"
-      version = "1.2.3"
+      version = "#{version}"
     )
   end
 
