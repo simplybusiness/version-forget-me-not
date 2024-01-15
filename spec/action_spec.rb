@@ -84,80 +84,44 @@ describe Action do
     end
   end
 
-  describe '#fetch_version' do
-    let(:expected_version) { '1.2.3' }
-    let(:decoded_content) { Base64.encode64(content) }
-
-    context 'when the version file is a version.rb' do
-      let(:content) { "module TestRepo\n  VERSION='#{expected_version}'\nend\n" }
-      
-      it 'returns the version' do
-        allow(client).to receive(:contents)
-        .with(repo, path: file_path, query: { ref: ref })
-        .and_return('content' => decoded_content)
-
-        expect(action.fetch_version(ref: ref)).to eq(expected_version)
-      end
+  describe '#fetch_version' do   
+    RSpec.shared_examples 'fetch_version for all supported file types' do |file_content|
+        let(:decoded_content) { Base64.encode64(file_content) }
+        
+        it 'returns the correct version' do
+          allow(client).to receive(:contents)
+            .with(repo, path: file_path, query: { ref: ref })
+            .and_return('content' => decoded_content)
+          expect(action.fetch_version(ref: ref)).to eq("1.2.3")
+        end
     end
 
-    context 'when the version file is a gemspec' do
-      let(:content) do
-        %(
+    version_rb_contents = "module TestRepo\n  VERSION='1.2.3'\nend\n"
+    gemspec_contents = %(
         Gem::Specification.new do |s|
           s.name                  = "action-testing"
           s.required_ruby_version = "2.6.5"
-          s.version               = "#{expected_version}"
+          s.version               = "1.2.3"
         end
       )
-      end
-
-      it 'returns the version' do
-        allow(client).to receive(:contents)
-          .with(repo, path: file_path, query: { ref: ref })
-          .and_return('content' => decoded_content)
-        expect(action.fetch_version(ref: ref)).to eq(expected_version)
-      end
-    end
-
-    context 'when the version file is a package.json' do
-      let(:content) do
-        %(
+    package_json_contents =  %(
           {
             "name": "action-testing",
-            "version": "#{expected_version}"
+            "version": "1.2.3"
           }
         )
-      end
-    
-      it 'returns the version' do
-        allow(client).to receive(:contents)
-          .with(repo, path: file_path, query: { ref: ref })
-          .and_return('content' => decoded_content)
-        expect(action.fetch_version(ref: ref)).to eq(expected_version)
-      end
-    end
-
-    context 'when the version file is a pyproject.toml' do
-      let(:content) do
-        %(
+    pyproject_toml_contents = %(
           [tool.poetry]
           name = "action-testing"
-          version = "#{expected_version}"
+          version = "1.2.3"
         )
-      end
 
-
-      it 'returns the version' do
-        allow(client).to receive(:contents)
-          .with(repo, path: file_path, query: { ref: ref })
-          .and_return('content' => decoded_content)
-        expect(action.fetch_version(ref: ref)).to eq(expected_version)
-      end
-    end
+    it_behaves_like 'fetch_version for all supported file types', version_rb_contents
+    it_behaves_like 'fetch_version for all supported file types', gemspec_contents
+    it_behaves_like 'fetch_version for all supported file types', package_json_contents
+    it_behaves_like 'fetch_version for all supported file types', pyproject_toml_contents
 
     context 'when the version file does not exist' do
-      let(:content) { "module TestRepo\n  VERSION='#{expected_version}'\nend\n" }
-
       before do
         allow(client).to receive(:contents)
           .with(repo, path: file_path, query: { ref: ref })
