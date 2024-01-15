@@ -65,6 +65,44 @@ describe Action do
     end
   end
 
+  describe '#fetch_version' do
+    let(:repo) { 'simplybusiness/test' }
+    let(:file_path) { 'version.rb' }
+    let(:ref) { 'my_branch' }
+    let(:content) { "module TestRepo\n  VERSION='1.2.3'\nend\n" }
+    let(:decoded_content) { Base64.encode64(content) }
+    let(:expected_version) { '1.2.3' }
+
+    before do
+      allow(client).to receive(:contents)
+        .with(repo, path: file_path, query: { ref: ref })
+        .and_return('content' => decoded_content)
+    end
+
+    context 'when the version file exists' do
+      it 'returns the version' do
+        expect(action.fetch_version(ref: ref)).to eq(expected_version)
+      end
+    end
+
+    context 'when the version file does not exist' do
+      before do
+        allow(client).to receive(:contents)
+          .with(repo, path: file_path, query: { ref: ref })
+          .and_raise(Octokit::NotFound)
+      end
+
+      it 'returns nil' do
+        expect(action.fetch_version(ref: ref)).to be_nil
+      end
+
+      it 'sets the failed description' do
+        action.fetch_version(ref: ref)
+        expect(action.failed_description).to eq("Version file not found on #{ref} branch #{file_path}")
+      end
+    end
+  end
+
   describe '#version_increased?' do
     RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
       context 'when the content is a version file' do
