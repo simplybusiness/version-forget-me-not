@@ -18,6 +18,26 @@ describe Action do
     }
   end
 
+  describe 'VERSION_SETTING' do
+    it 'matches correct version settings' do
+      expect(Action::VERSION_SETTING).to match('VERSION=1.2.3')
+      expect(Action::VERSION_SETTING).to match('version=1.2.3')
+      expect(Action::VERSION_SETTING).to match('Version=1.2.3')
+      expect(Action::VERSION_SETTING).to match('VERSION=1.2.3-alpha')
+      expect(Action::VERSION_SETTING).to match('VERSION=1.2.3+build123')
+      expect(Action::VERSION_SETTING).to match('VERSION = 1.2.3')
+      expect(Action::VERSION_SETTING).to match('"VERSION" = "1.2.3"')
+      expect(Action::VERSION_SETTING).to match("'VERSION' = '1.2.3'")
+      expect(Action::VERSION_SETTING).to match('"VERSION": "1.2.3"')
+      expect(Action::VERSION_SETTING).to match('gem.version = 1.2.3')
+    end
+
+    it 'does not match invalid version settings' do
+      expect(Action::VERSION_SETTING).not_to match('5.5.5')
+      expect(Action::VERSION_SETTING).not_to match('expected_ruby_version = 3.3.0')
+    end
+  end
+
   describe '#check_version' do
     let(:config) do
       Config.new(
