@@ -115,6 +115,12 @@ describe Action do
       expect(action.fetch_version(ref: ref)).to eq("1.2.3")
     end
 
+    it 'returns the correct version for a sb algo-generated version.rb file' do
+      mock_response('my_branch', mock_sb_algo_version_content('1.2.3'))
+
+      expect(action.fetch_version(ref: ref)).to eq("1.2.3")
+    end
+
     it 'returns the correct version for a gemspec file' do
       mock_response('my_branch', mock_gemspec_content('1.2.3'))
 
@@ -244,6 +250,17 @@ describe Action do
     %(
       module TestRepo
         VERSION='#{version}'
+      end
+    )
+  end
+
+  def mock_sb_algo_version_content(version)
+    %(
+      module TestRepo
+        base = '#{version}'
+
+        # SB-specific versioning "algorithm" to accommodate BNW/Jenkins/gemstash
+        VERSION = (pre = ENV.fetch('GEM_PRE_RELEASE', '')).empty? ? base : "\#{base}.\#{pre}"
       end
     )
   end
