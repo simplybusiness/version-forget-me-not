@@ -20,7 +20,7 @@ describe Action do
   end
   let(:config) { Config.new(client, file_path, event_payload) }
   let(:action) { Action.new(config) }
-  let(:repo) { 'simplybusiness/test' }  
+  let(:repo) { 'simplybusiness/test' }
   let(:ref) { 'my_branch' }
 
   describe 'VERSION_SETTING' do
@@ -48,14 +48,14 @@ describe Action do
       expect(Action::VERSION_SETTING).to match('"VERSION": "1.2.3"')
     end
 
-    it 'handles version stored on object' do 
+    it 'handles version stored on object' do
       expect(Action::VERSION_SETTING).to match('gem.version = 1.2.3')
     end
 
     it 'does not match version number only' do
       expect(Action::VERSION_SETTING).not_to match('5.5.5')
     end
-    
+
     it 'does not match unrelated versioning' do
       expect(Action::VERSION_SETTING).not_to match('expected_ruby_version = 3.3.0')
     end
@@ -102,11 +102,10 @@ describe Action do
     end
   end
 
-  describe '#fetch_version' do   
-
+  describe '#fetch_version' do
     it 'returns the correct version for a version.rb file' do
       mock_response('my_branch', mock_version_content('1.2.3'))
-    
+
       expect(action.fetch_version(ref: ref)).to eq("1.2.3")
     end
 
@@ -145,12 +144,11 @@ describe Action do
   end
 
   describe '#version_increased?' do
-
     context 'when version is unchanged' do
-      it 'returns false' do      
+      it 'returns false' do
         mock_response('master', mock_version_content('1.2.3'))
         mock_response('my_branch', mock_version_content('1.2.3'))
-        
+
         expect(action.version_increased?(branch_name: 'my_branch')).to be(false)
       end
     end
@@ -173,20 +171,20 @@ describe Action do
       end
     end
 
-    context 'when there is a minor version increase' do 
+    context 'when there is a minor version increase' do
       it 'returns true' do
         mock_response('master', mock_version_content('1.2.3'))
         mock_response('my_branch', mock_version_content('1.3.0'))
-  
+
         expect(action.version_increased?(branch_name: 'my_branch')).to be(true)
       end
     end
 
-    context 'when there is a major version increase' do     
+    context 'when there is a major version increase' do
       it 'returns true' do
         mock_response('master', mock_version_content('1.2.3'))
         mock_response('my_branch', mock_version_content('2.0.0'))
-        
+
         expect(action.version_increased?(branch_name: 'my_branch')).to be(true)
       end
     end
@@ -212,8 +210,9 @@ describe Action do
 
   describe 'message' do
     it 'truncates to 140 characters if needed' do
-      config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder/somewhere/' \
-                         'in/this/repo/oh/my/gosh/its/still/going/wherever/could/the/version/be/oh/found/it/version_file_path'
+      config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder' \
+                         '/somewhere/in/this/repo/oh/my/gosh/its/still/going/wherever' \
+                         '/could/the/version/be/oh/found/it/version_file_path'
       message = "Update: #{config.file_path}"
       description = action.send(:truncate_message, message)
       expect(description.length).to eq(140)
@@ -253,7 +252,7 @@ describe Action do
     )
   end
 
-  def mock_package_json_content(version)
+  def mock_package_json_content(_version)
     %(
       {
         "name": "action-testing",
@@ -261,8 +260,8 @@ describe Action do
       }
     )
   end
-  
-  def mock_pyproject_toml_content(version)
+
+  def mock_pyproject_toml_content(_version)
     %(
       [tool.poetry]
       name = "action-testing"
@@ -273,7 +272,7 @@ describe Action do
   def mock_response(branch, content)
     allow(client).to receive(:contents)
       .with('simplybusiness/test', path: config.file_path, query: { ref: branch })
-      .and_return({'content' => Base64.encode64(content)})
+      .and_return({ 'content' => Base64.encode64(content) })
   end
 
   def mock_response_error(branch)
