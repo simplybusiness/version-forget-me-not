@@ -291,7 +291,6 @@ describe Action do
     )
   end
 
-
   def mock_package_json_content(version)
     %(
       {
