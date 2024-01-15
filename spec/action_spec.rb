@@ -85,47 +85,34 @@ describe Action do
   end
 
   describe '#fetch_version' do   
-    RSpec.shared_examples 'fetch_version for all supported file types' do |file_content|
-        let(:decoded_content) { Base64.encode64(file_content) }
-        
-        it 'returns the correct version' do
-          allow(client).to receive(:contents)
-            .with(repo, path: file_path, query: { ref: ref })
-            .and_return('content' => decoded_content)
-          expect(action.fetch_version(ref: ref)).to eq("1.2.3")
-        end
+
+    it 'returns the correct version for a version.rb file' do
+      mock_response('my_branch', mock_version_content('1.2.3'))
+    
+      expect(action.fetch_version(ref: ref)).to eq("1.2.3")
     end
 
-    version_rb_contents = "module TestRepo\n  VERSION='1.2.3'\nend\n"
-    gemspec_contents = %(
-        Gem::Specification.new do |s|
-          s.name                  = "action-testing"
-          s.required_ruby_version = "2.6.5"
-          s.version               = "1.2.3"
-        end
-      )
-    package_json_contents =  %(
-          {
-            "name": "action-testing",
-            "version": "1.2.3"
-          }
-        )
-    pyproject_toml_contents = %(
-          [tool.poetry]
-          name = "action-testing"
-          version = "1.2.3"
-        )
+    it 'returns the correct version for a gemspec file' do
+      mock_response('my_branch', mock_gemspec_content('1.2.3'))
 
-    it_behaves_like 'fetch_version for all supported file types', version_rb_contents
-    it_behaves_like 'fetch_version for all supported file types', gemspec_contents
-    it_behaves_like 'fetch_version for all supported file types', package_json_contents
-    it_behaves_like 'fetch_version for all supported file types', pyproject_toml_contents
+      expect(action.fetch_version(ref: ref)).to eq("1.2.3")
+    end
+
+    it 'returns the correct version for a package.json file' do
+      mock_response('my_branch', mock_package_json_content('1.2.3'))
+
+      expect(action.fetch_version(ref: ref)).to eq("1.2.3")
+    end
+
+    it 'returns the correct version for a pyproject.toml file' do
+      mock_response('my_branch', mock_pyproject_toml_content('1.2.3'))
+
+      expect(action.fetch_version(ref: ref)).to eq("1.2.3")
+    end
 
     context 'when the version file does not exist' do
       before do
-        allow(client).to receive(:contents)
-          .with(repo, path: file_path, query: { ref: ref })
-          .and_raise(Octokit::NotFound)
+        mock_response_error('my_branch')
       end
 
       it 'returns nil' do
@@ -211,35 +198,44 @@ describe Action do
   private
 
   def mock_version_content(version)
-    {
-      'content' => Base64.encode64(
-        %(
-        module TestRepo
-          VERSION='#{version}'
-        end
-      )
-      )
-    }
+    %(
+      module TestRepo
+        VERSION='#{version}'
+      end
+    )
   end
 
   def mock_gemspec_content(version)
-    {
-      'content' => Base64.encode64(
-        %(
-        Gem::Specification.new do |s|
-          s.name                  = "action-testing"
-          s.required_ruby_version = "2.6.5"
-          s.version               = "#{version}"
-        end
-      )
-      )
-    }
+    %(
+      Gem::Specification.new do |s|
+        s.name                  = "action-testing"
+        s.required_ruby_version = "2.6.5"
+        s.version               = "#{version}"
+      end
+    )
+  end
+
+  def mock_package_json_content(version)
+    %(
+      {
+        "name": "action-testing",
+        "version": "1.2.3"
+      }
+    )
+  end
+  
+  def mock_pyproject_toml_content(version)
+    %(
+      [tool.poetry]
+      name = "action-testing"
+      version = "1.2.3"
+    )
   end
 
   def mock_response(branch, content)
     allow(client).to receive(:contents)
       .with('simplybusiness/test', path: config.file_path, query: { ref: branch })
-      .and_return(content)
+      .and_return({'content' => Base64.encode64(content)})
   end
 
   def mock_response_error(branch)
