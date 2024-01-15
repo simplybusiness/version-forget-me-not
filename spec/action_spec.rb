@@ -143,8 +143,8 @@ describe Action do
     RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
       context 'when the content is a version file' do
         it 'returns false if the versions match' do
-          mock_version_response('master', '1.2.3')
-          mock_version_response('my_branch', new_version)
+          mock_response('master', mock_version_content('1.2.3'))
+          mock_response('my_branch', mock_version_content(new_version))
 
           expect(action.version_increased?(branch_name: 'my_branch')).to eq(result)
         end
@@ -152,8 +152,8 @@ describe Action do
 
       context 'when the content is a gemspec file' do
         it 'returns false if the versions match' do
-          mock_gemspec_response('master', '1.2.3')
-          mock_gemspec_response('my_branch', new_version)
+          mock_response('master', mock_gemspec_content('1.2.3'))
+          mock_response('my_branch', mock_gemspec_content(new_version))
 
           expect(action.version_increased?(branch_name: 'my_branch')).to eq(result)
         end
@@ -168,16 +168,16 @@ describe Action do
 
     context 'when version file name has changed so old version file not found' do
       it 'return false' do
-        mock_version_response('master', '1.2.3')
-        mock_version_response_error('my_branch')
+        mock_response('master', mock_version_content('1.2.3'))
+        mock_response_error('my_branch')
         expect(action.version_increased?(branch_name: 'my_branch')).to be(false)
       end
     end
 
     context 'when version file not found' do
       it 'rescue exception and set failed description' do
-        mock_version_response_error('master')
-        mock_version_response('my_branch', '1.2.3')
+        mock_response_error('master')
+        mock_response('my_branch', mock_version_content('1.2.3'))
 
         expect { action.version_increased?(branch_name: 'my_branch') }.to_not raise_error
         expect(action.failed_description).to eq("Version file not found on master branch #{config.file_path}")
@@ -210,8 +210,8 @@ describe Action do
 
   private
 
-  def mock_version_response(branch, version)
-    content = {
+  def mock_version_content(version)
+    {
       'content' => Base64.encode64(
         %(
         module TestRepo
@@ -220,11 +220,10 @@ describe Action do
       )
       )
     }
-    mock_response(content, branch)
   end
 
-  def mock_gemspec_response(branch, version)
-    content = {
+  def mock_gemspec_content(version)
+    {
       'content' => Base64.encode64(
         %(
         Gem::Specification.new do |s|
@@ -235,16 +234,15 @@ describe Action do
       )
       )
     }
-    mock_response(content, branch)
   end
 
-  def mock_response(content, branch)
+  def mock_response(branch, content)
     allow(client).to receive(:contents)
       .with('simplybusiness/test', path: config.file_path, query: { ref: branch })
       .and_return(content)
   end
 
-  def mock_version_response_error(branch)
+  def mock_response_error(branch)
     allow(client).to receive(:contents)
       .with('simplybusiness/test', path: config.file_path, query: { ref: branch })
       .and_raise(Octokit::NotFound)
