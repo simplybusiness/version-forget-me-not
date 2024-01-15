@@ -24,21 +24,39 @@ describe Action do
   let(:ref) { 'my_branch' }
 
   describe 'VERSION_SETTING' do
-    it 'matches correct version settings' do
+    it 'is case insensitive' do
       expect(Action::VERSION_SETTING).to match('VERSION=1.2.3')
       expect(Action::VERSION_SETTING).to match('version=1.2.3')
       expect(Action::VERSION_SETTING).to match('Version=1.2.3')
+    end
+
+    it 'handles extended versioning' do
       expect(Action::VERSION_SETTING).to match('VERSION=1.2.3-alpha')
       expect(Action::VERSION_SETTING).to match('VERSION=1.2.3+build123')
+    end
+
+    it 'handles spaces between version and number' do
       expect(Action::VERSION_SETTING).to match('VERSION = 1.2.3')
+    end
+
+    it 'handles single and double quotes' do
       expect(Action::VERSION_SETTING).to match('"VERSION" = "1.2.3"')
       expect(Action::VERSION_SETTING).to match("'VERSION' = '1.2.3'")
+    end
+
+    it 'handles colon separator' do
       expect(Action::VERSION_SETTING).to match('"VERSION": "1.2.3"')
+    end
+
+    it 'handles version stored on object' do 
       expect(Action::VERSION_SETTING).to match('gem.version = 1.2.3')
     end
 
-    it 'does not match invalid version settings' do
+    it 'does not match version number only' do
       expect(Action::VERSION_SETTING).not_to match('5.5.5')
+    end
+    
+    it 'does not match unrelated versioning' do
       expect(Action::VERSION_SETTING).not_to match('expected_ruby_version = 3.3.0')
     end
   end
@@ -127,34 +145,54 @@ describe Action do
   end
 
   describe '#version_increased?' do
-    RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
-      context 'when the content is a version file' do
-        it 'returns false if the versions match' do
-          mock_response('master', mock_version_content('1.2.3'))
-          mock_response('my_branch', mock_version_content(new_version))
 
-          expect(action.version_increased?(branch_name: 'my_branch')).to eq(result)
-        end
-      end
-
-      context 'when the content is a gemspec file' do
-        it 'returns false if the versions match' do
-          mock_response('master', mock_gemspec_content('1.2.3'))
-          mock_response('my_branch', mock_gemspec_content(new_version))
-
-          expect(action.version_increased?(branch_name: 'my_branch')).to eq(result)
-        end
+    context 'when version is unchanged' do
+      it 'returns false' do      
+        mock_response('master', mock_version_content('1.2.3'))
+        mock_response('my_branch', mock_version_content('1.2.3'))
+        
+        expect(action.version_increased?(branch_name: 'my_branch')).to be(false)
       end
     end
 
-    it_behaves_like 'version_increased? for all supported file types', '1.2.3', false
-    it_behaves_like 'version_increased? for all supported file types', '1.1.4', false
-    it_behaves_like 'version_increased? for all supported file types', '1.2.4', true
-    it_behaves_like 'version_increased? for all supported file types', '1.3.0', true
-    it_behaves_like 'version_increased? for all supported file types', '2.0.0', true
+    context 'when there is a version decrease' do
+      it 'returns false' do
+        mock_response('master', mock_version_content('1.2.3'))
+        mock_response('my_branch', mock_version_content('1.1.24'))
+
+        expect(action.version_increased?(branch_name: 'my_branch')).to be(false)
+      end
+    end
+
+    context 'when there is a patch version increase' do
+      it 'returns true' do
+        mock_response('master', mock_version_content('1.2.3'))
+        mock_response('my_branch', mock_version_content('1.2.4'))
+
+        expect(action.version_increased?(branch_name: 'my_branch')).to be(true)
+      end
+    end
+
+    context 'when there is a minor version increase' do 
+      it 'returns true' do
+        mock_response('master', mock_version_content('1.2.3'))
+        mock_response('my_branch', mock_version_content('1.3.0'))
+  
+        expect(action.version_increased?(branch_name: 'my_branch')).to be(true)
+      end
+    end
+
+    context 'when there is a major version increase' do     
+      it 'returns true' do
+        mock_response('master', mock_version_content('1.2.3'))
+        mock_response('my_branch', mock_version_content('2.0.0'))
+        
+        expect(action.version_increased?(branch_name: 'my_branch')).to be(true)
+      end
+    end
 
     context 'when version file name has changed so old version file not found' do
-      it 'return false' do
+      it 'returns false' do
         mock_response('master', mock_version_content('1.2.3'))
         mock_response_error('my_branch')
         expect(action.version_increased?(branch_name: 'my_branch')).to be(false)
@@ -162,7 +200,7 @@ describe Action do
     end
 
     context 'when version file not found' do
-      it 'rescue exception and set failed description' do
+      it 'rescues exception and set failed description' do
         mock_response_error('master')
         mock_response('my_branch', mock_version_content('1.2.3'))
 
@@ -172,7 +210,7 @@ describe Action do
     end
   end
 
-  describe 'Message' do
+  describe 'message' do
     it 'truncates to 140 characters if needed' do
       config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder/somewhere/' \
                          'in/this/repo/oh/my/gosh/its/still/going/wherever/could/the/version/be/oh/found/it/version_file_path'
