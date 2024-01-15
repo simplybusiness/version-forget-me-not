@@ -8,7 +8,7 @@ class Action
 
   SEMVER = /["']*(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?["']*/ # rubocop:disable Layout/LineLength
   SEPARATOR = /\s*[:=]\s*/
-  VERSION_KEY = /(^|\.|\s)version/
+  VERSION_KEY = /(?:^|\.|\s|"|')(?:base|version)["']*/
   VERSION_SETTING = Regexp.new(VERSION_KEY.source + SEPARATOR.source + SEMVER.source, Regexp::IGNORECASE).freeze
 
   def initialize(config)
@@ -32,9 +32,19 @@ class Action
     client.create_status(repo, head_commit, state, description: description, context: 'Version check')
   end
 
+  def fetch_version(ref:)
+    content = Base64.decode64(client.contents(repo, path: file_path, query: { ref: ref })['content'])
+    match = content.match(VERSION_SETTING)
+
+    format_version(match)
+  rescue Octokit::NotFound
+    @failed_description = "Version file not found on #{ref} branch #{file_path}"
+    nil
+  end
+
   def version_increased?(branch_name:, trunk_name: 'master')
-    branch_version = fetch_version_safe(ref: branch_name)
-    trunk_version = fetch_version_safe(ref: trunk_name)
+    branch_version = fetch_version(ref: branch_name)
+    trunk_version = fetch_version(ref: trunk_name)
     return false if branch_version.nil? || trunk_version.nil?
 
     puts "::notice title=Trunk version::trunk version: #{trunk_version}"
@@ -43,20 +53,6 @@ class Action
   end
 
   private
-
-  def fetch_version(ref:)
-    content = Base64.decode64(client.contents(repo, path: file_path, query: { ref: ref })['content'])
-    match = content.match(VERSION_SETTING)
-
-    format_version(match)
-  end
-
-  def fetch_version_safe(ref:)
-    fetch_version(ref: ref)
-  rescue Octokit::NotFound
-    @failed_description = "Version file not found on #{ref} branch #{file_path}"
-    nil
-  end
 
   def format_version(version)
     Gem::Version.new(version[0].split(SEPARATOR).last.gsub(/\s/, '').gsub(/'|"/, ''))
