@@ -7,6 +7,7 @@ Config = Struct.new(:client, :file_path, :event_payload)
 
 describe Action do
   let(:client) { instance_double(Octokit::Client) }
+  let(:file_path) { 'version_file_path' }
   let(:event_payload) do
     {
       'repository' => { 'full_name' => 'simplybusiness/test' },
@@ -17,6 +18,10 @@ describe Action do
       }
     }
   end
+  let(:config) { Config.new(client, file_path, event_payload) }
+  let(:action) { Action.new(config) }
+  let(:repo) { 'simplybusiness/test' }  
+  let(:ref) { 'my_branch' }
 
   describe 'VERSION_SETTING' do
     it 'matches correct version settings' do
@@ -39,15 +44,6 @@ describe Action do
   end
 
   describe '#check_version' do
-    let(:config) do
-      Config.new(
-        client,
-        'version.rb',
-        event_payload
-      )
-    end
-    let(:action) { Action.new(config) }
-    
     it 'creates a success state when version is changed' do
       allow(action).to receive(:version_increased?).and_return(true)
       expect(client).to receive(:create_status).with(
@@ -75,82 +71,36 @@ describe Action do
     it 'creates a failure state when version file is not found' do
       allow(action).to receive_messages(
         version_increased?: false,
-        failed_description: 'Version file not found on version.rb'
+        failed_description: "Version file not found on #{config.file_path}"
       )
       expect(client).to receive(:create_status).with(
         'simplybusiness/test',
         '1111',
         'failure',
         context: 'Version check',
-        description: 'Version file not found on version.rb'
+        description: "Version file not found on #{config.file_path}"
       )
       action.check_version
     end
   end
 
   describe '#fetch_version' do
-    let(:repo) { 'simplybusiness/test' }  
-    let(:ref) { 'my_branch' }
-    let(:decoded_content) { Base64.encode64(content) }
     let(:expected_version) { '1.2.3' }
+    let(:decoded_content) { Base64.encode64(content) }
 
     context 'when the version file is a version.rb' do
-      let(:config) do
-        Config.new(
-          client,
-          'version.rb',
-          event_payload
-        )
-      end
-      let(:action) { Action.new(config) }
-      let(:file_path) { 'version.rb' }
       let(:content) { "module TestRepo\n  VERSION='#{expected_version}'\nend\n" }
-
-      before do
-        allow(client).to receive(:contents)
-          .with(repo, path: file_path, query: { ref: ref })
-          .and_return('content' => decoded_content)
-      end
-
+      
       it 'returns the version' do
+        allow(client).to receive(:contents)
+        .with(repo, path: file_path, query: { ref: ref })
+        .and_return('content' => decoded_content)
+
         expect(action.fetch_version(ref: ref)).to eq(expected_version)
       end
     end
-
-    context 'when the version file is a version.rb' do
-      let(:config) do
-        Config.new(
-          client,
-          'version.rb',
-          event_payload
-        )
-      end
-      let(:action) { Action.new(config) }
-      let(:file_path) { 'version.rb' }
-      let(:content) { "module TestRepo\n  VERSION='#{expected_version}'\nend\n" }
-
-      before do
-        allow(client).to receive(:contents)
-          .with(repo, path: file_path, query: { ref: ref })
-          .and_return('content' => decoded_content)
-      end
-
-      it 'returns the version' do
-        expect(action.fetch_version(ref: ref)).to eq(expected_version)
-      end
-    end
-
 
     context 'when the version file is a gemspec' do
-      let(:config) do
-        Config.new(
-          client,
-          'action-testing.gemspec',
-          event_payload
-        )
-      end
-      let(:action) { Action.new(config) }
-      let(:file_path) { 'action-testing.gemspec' }
       let(:content) do
         %(
         Gem::Specification.new do |s|
@@ -161,27 +111,15 @@ describe Action do
       )
       end
 
-      before do
+      it 'returns the version' do
         allow(client).to receive(:contents)
           .with(repo, path: file_path, query: { ref: ref })
           .and_return('content' => decoded_content)
-      end
-
-      it 'returns the version' do
         expect(action.fetch_version(ref: ref)).to eq(expected_version)
       end
     end
 
     context 'when the version file is a package.json' do
-      let(:config) do
-        Config.new(
-          client,
-          'package.json',
-          event_payload
-        )
-      end
-      let(:action) { Action.new(config) }
-      let(:file_path) { 'package.json' }
       let(:content) do
         %(
           {
@@ -190,28 +128,16 @@ describe Action do
           }
         )
       end
-
-      before do
+    
+      it 'returns the version' do
         allow(client).to receive(:contents)
           .with(repo, path: file_path, query: { ref: ref })
           .and_return('content' => decoded_content)
-      end
-
-      it 'returns the version' do
         expect(action.fetch_version(ref: ref)).to eq(expected_version)
       end
     end
 
     context 'when the version file is a pyproject.toml' do
-      let(:config) do
-        Config.new(
-          client,
-          'pyproject.toml',
-          event_payload
-        )
-      end
-      let(:action) { Action.new(config) }
-      let(:file_path) { 'pyproject.toml' }
       let(:content) do
         %(
           [tool.poetry]
@@ -220,27 +146,16 @@ describe Action do
         )
       end
 
-      before do
+
+      it 'returns the version' do
         allow(client).to receive(:contents)
           .with(repo, path: file_path, query: { ref: ref })
           .and_return('content' => decoded_content)
-      end
-
-      it 'returns the version' do
         expect(action.fetch_version(ref: ref)).to eq(expected_version)
       end
     end
 
     context 'when the version file does not exist' do
-      let(:config) do
-        Config.new(
-          client,
-          'version.rb',
-          event_payload
-        )
-      end
-      let(:action) { Action.new(config) }
-      let(:file_path) { 'version.rb' }
       let(:content) { "module TestRepo\n  VERSION='#{expected_version}'\nend\n" }
 
       before do
@@ -261,15 +176,6 @@ describe Action do
   end
 
   describe '#version_increased?' do
-    let(:config) do
-      Config.new(
-        client,
-        'version.rb',
-        event_payload
-      )
-    end
-    let(:action) { Action.new(config) }
-
     RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
       context 'when the content is a version file' do
         it 'returns false if the versions match' do
@@ -310,24 +216,15 @@ describe Action do
         mock_version_response('my_branch', '1.2.3')
 
         expect { action.version_increased?(branch_name: 'my_branch') }.to_not raise_error
-        expect(action.failed_description).to eq('Version file not found on master branch version.rb')
+        expect(action.failed_description).to eq("Version file not found on master branch #{config.file_path}")
       end
     end
   end
 
   describe 'Message' do
-    let(:config) do
-      Config.new(
-        client,
-        'version.rb',
-        event_payload
-      )
-    end
-    let(:action) { Action.new(config) }
-
     it 'truncates to 140 characters if needed' do
       config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder/somewhere/' \
-                         'in/this/repo/oh/my/gosh/its/still/going/wherever/could/the/version/be/oh/found/it/version.rb'
+                         'in/this/repo/oh/my/gosh/its/still/going/wherever/could/the/version/be/oh/found/it/version_file_path'
       message = "Update: #{config.file_path}"
       description = action.send(:truncate_message, message)
       expect(description.length).to eq(140)
@@ -338,8 +235,8 @@ describe Action do
     end
 
     it "doesn't truncate if the description is exactly 140 characters" do
-      config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder/somewhere/' \
-                         'in/this/repo/ohh/my/gosh/its/still/version.rb'
+      config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/folder/somewhere/' \
+                         'in/this/repo/ohh/my/gosh/its/still/version_file_path'
       message = "Update: #{config.file_path}"
       description = action.send(:truncate_message, message)
       expect(description.length).to eq(140)
@@ -379,13 +276,13 @@ describe Action do
 
   def mock_response(content, branch)
     allow(client).to receive(:contents)
-      .with('simplybusiness/test', path: 'version.rb', query: { ref: branch })
+      .with('simplybusiness/test', path: config.file_path, query: { ref: branch })
       .and_return(content)
   end
 
   def mock_version_response_error(branch)
     allow(client).to receive(:contents)
-      .with('simplybusiness/test', path: 'version.rb', query: { ref: branch })
+      .with('simplybusiness/test', path: config.file_path, query: { ref: branch })
       .and_raise(Octokit::NotFound)
   end
 end
