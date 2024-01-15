@@ -30,6 +30,10 @@ describe Action do
       expect(Action::VERSION_SETTING).to match('Version=1.2.3')
     end
 
+    it 'handles SB version.rb versioning using base and an algorithm' do
+      expect(Action::VERSION_SETTING).to match("base = '2.1.10'")
+    end
+
     it 'handles extended versioning' do
       expect(Action::VERSION_SETTING).to match('VERSION=1.2.3.pre')
       expect(Action::VERSION_SETTING).to match('VERSION=1.2.3.123456')
