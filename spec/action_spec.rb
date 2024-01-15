@@ -7,24 +7,27 @@ Config = Struct.new(:client, :file_path, :event_payload)
 
 describe Action do
   let(:client) { instance_double(Octokit::Client) }
-  let(:config) do
-    Config.new(
-      client,
-      'version.rb',
-      {
-        'repository' => { 'full_name' => 'simplybusiness/test' },
-        'pull_request' => {
-          'number' => 1,
-          'head' => { 'branch' => 'my_branch', 'sha' => '1111' },
-          'base' => { 'branch' => 'master' }
-        }
+  let(:event_payload) do
+    {
+      'repository' => { 'full_name' => 'simplybusiness/test' },
+      'pull_request' => {
+        'number' => 1,
+        'head' => { 'branch' => 'my_branch', 'sha' => '1111' },
+        'base' => { 'branch' => 'master' }
       }
-    )
+    }
   end
 
-  let(:action) { Action.new(config) }
-
   describe '#check_version' do
+    let(:config) do
+      Config.new(
+        client,
+        'version.rb',
+        event_payload
+      )
+    end
+    let(:action) { Action.new(config) }
+    
     it 'creates a success state when version is changed' do
       allow(action).to receive(:version_increased?).and_return(true)
       expect(client).to receive(:create_status).with(
@@ -66,6 +69,14 @@ describe Action do
   end
 
   describe '#fetch_version' do
+    let(:config) do
+      Config.new(
+        client,
+        'version.rb',
+        event_payload
+      )
+    end
+    let(:action) { Action.new(config) }
     let(:repo) { 'simplybusiness/test' }
     let(:file_path) { 'version.rb' }
     let(:ref) { 'my_branch' }
@@ -104,6 +115,15 @@ describe Action do
   end
 
   describe '#version_increased?' do
+    let(:config) do
+      Config.new(
+        client,
+        'version.rb',
+        event_payload
+      )
+    end
+    let(:action) { Action.new(config) }
+
     RSpec.shared_examples 'version_increased? for all supported file types' do |new_version, result|
       context 'when the content is a version file' do
         it 'returns false if the versions match' do
@@ -150,6 +170,15 @@ describe Action do
   end
 
   describe 'Message' do
+    let(:config) do
+      Config.new(
+        client,
+        'version.rb',
+        event_payload
+      )
+    end
+    let(:action) { Action.new(config) }
+
     it 'truncates to 140 characters if needed' do
       config.file_path = 'a/very/large/file/path/to/get/to/the/version/file/located/in/a/random/folder/somewhere/' \
                          'in/this/repo/oh/my/gosh/its/still/going/wherever/could/the/version/be/oh/found/it/version.rb'
