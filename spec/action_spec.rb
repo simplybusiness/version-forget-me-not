@@ -31,6 +31,8 @@ describe Action do
     end
 
     it 'handles extended versioning' do
+      expect(Action::VERSION_SETTING).to match('VERSION=1.2.3.pre')
+      expect(Action::VERSION_SETTING).to match('VERSION=1.2.3.123456')
       expect(Action::VERSION_SETTING).to match('VERSION=1.2.3-alpha')
       expect(Action::VERSION_SETTING).to match('VERSION=1.2.3+build123')
     end
