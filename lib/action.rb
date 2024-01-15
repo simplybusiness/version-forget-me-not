@@ -33,8 +33,8 @@ class Action
   end
 
   def version_increased?(branch_name:, trunk_name: 'master')
-    branch_version = fetch_version_safe(ref: branch_name)
-    trunk_version = fetch_version_safe(ref: trunk_name)
+    branch_version = fetch_version(ref: branch_name)
+    trunk_version = fetch_version(ref: trunk_name)
     return false if branch_version.nil? || trunk_version.nil?
 
     puts "::notice title=Trunk version::trunk version: #{trunk_version}"
@@ -49,10 +49,6 @@ class Action
     match = content.match(VERSION_SETTING)
 
     format_version(match)
-  end
-
-  def fetch_version_safe(ref:)
-    fetch_version(ref: ref)
   rescue Octokit::NotFound
     @failed_description = "Version file not found on #{ref} branch #{file_path}"
     nil
