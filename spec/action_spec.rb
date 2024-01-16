@@ -127,6 +127,12 @@ describe Action do
       expect(action.fetch_version(ref: ref)).to eq("1.2.3")
     end
 
+    it 'returns the correct version for a openapi.yaml file' do
+      mock_response('my_branch', mock_open_api_yaml_content('1.2.3'))
+
+      expect(action.fetch_version(ref: ref)).to eq("1.2.3")
+    end
+
     it 'returns the correct version for a package.json file' do
       mock_response('my_branch', mock_package_json_content('1.2.3'))
 
@@ -275,20 +281,30 @@ describe Action do
     )
   end
 
-  def mock_package_json_content(_version)
+  def mock_open_api_yaml_content(version)
+    %(
+      openapi: 3.0.0
+      info:
+        title: Sample API
+        description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+        version: "#{version}"
+    )
+  end
+
+  def mock_package_json_content(version)
     %(
       {
         "name": "action-testing",
-        "version": "1.2.3"
+        "version": "#{version}"
       }
     )
   end
 
-  def mock_pyproject_toml_content(_version)
+  def mock_pyproject_toml_content(version)
     %(
       [tool.poetry]
       name = "action-testing"
-      version = "1.2.3"
+      version = "#{version}"
     )
   end
 
