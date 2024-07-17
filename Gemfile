@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'faraday-retry', '~> 2.2'
 gem 'octokit'
 
 group :development, :test do
@@ -9,5 +10,3 @@ group :development, :test do
   gem 'rspec'
   gem 'simplycop'
 end
-
-gem 'faraday-retry', '~> 2.2'
