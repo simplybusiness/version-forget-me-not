@@ -58,6 +58,10 @@ describe Action do
       expect(Action::VERSION_SETTING).to match('gem.version = 1.2.3')
     end
 
+    it 'handles a lowercase, underscored, quote-marked, equal separated semver like in python' do
+      expect(Action::VERSION_SETTING).to match('__version__ = "1.0.0"')
+    end
+
     it 'does not match version number only' do
       expect(Action::VERSION_SETTING).not_to match('5.5.5')
     end
