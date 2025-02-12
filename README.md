@@ -27,7 +27,7 @@ It is operational on Ruby, Python and Javascript projects.
      statuses: write
    jobs:
      build:
-       runs-on: ubuntu-20.04
+       runs-on: ubuntu-latest
        steps:
          - uses: simplybusiness/version-forget-me-not@v2
            env:
