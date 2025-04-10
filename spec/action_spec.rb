@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'ostruct'
+require 'base64'
 require_relative '../lib/action'
 
 Config = Struct.new(:client, :file_path, :event_payload)
