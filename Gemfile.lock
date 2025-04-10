@@ -134,6 +134,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  base64 (~> 0.2.0)
   faraday-retry (~> 2.3)
   octokit
   pry
