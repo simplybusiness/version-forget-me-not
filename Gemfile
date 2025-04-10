@@ -10,3 +10,5 @@ group :development, :test do
   gem 'rspec'
   gem 'simplycop'
 end
+
+gem "base64", "~> 0.2.0"
