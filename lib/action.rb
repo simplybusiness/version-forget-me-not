@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'config'
+require 'base64'
 
 # Fetch and check the version
 class Action
