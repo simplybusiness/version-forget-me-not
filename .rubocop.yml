@@ -6,10 +6,3 @@ inherit_gem:
 
 AllCops:
   TargetRubyVersion: 3.1
-
-Metrics/BlockLength:
-  Exclude:
-    - spec/**/*.rb
-
-Layout/LineLength:
-  Max: 200
