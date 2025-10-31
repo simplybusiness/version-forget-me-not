@@ -5,5 +5,5 @@ metadata:
   title: Version Forget-Me-Not
   description: Github action for checking the version is updated in pull request
 spec:
-  type: github action
+  type: tooling
   lifecycle: production
