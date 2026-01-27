@@ -1,0 +1,26 @@
+# Git files
+.git
+.gitignore
+.github
+
+# Documentation
+README.md
+RELEASE.md
+*.md
+images/
+
+# Tests
+spec/
+
+# Development files
+.DS_Store
+.idea/
+.ruby-version
+.rubocop.yml
+
+# CI/CD
+catalog-info.yaml
+CODEOWNERS
+
+# Gemfile.lock is copied but not needed in final image for action
+# Keep Gemfile and Gemfile.lock for bundle install

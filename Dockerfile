@@ -1,8 +1,8 @@
 FROM ruby:3.3
 
 LABEL maintainer="simplybusiness <opensourcetech@simplybusiness.co.uk>"
-
-RUN gem update --system
+LABEL org.opencontainers.image.source="https://github.com/simplybusiness/version-forget-me-not"
+LABEL org.opencontainers.image.description="GitHub Action to check version updates in pull requests"
 
 RUN mkdir -p /runner/action
 
@@ -14,9 +14,9 @@ COPY lib ./lib
 
 COPY run.rb ./
 
-RUN bundle install --retry 3
+RUN bundle install --retry 3 --without development test
 
-ENV BUNDLE_GEMFILE /runner/action/Gemfile
+ENV BUNDLE_GEMFILE=/runner/action/Gemfile
 
 RUN chmod +x /runner/action/run.rb
 
