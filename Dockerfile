@@ -1,4 +1,4 @@
-FROM ruby:3.3
+FROM ruby:4.0
 
 LABEL maintainer="simplybusiness <opensourcetech@simplybusiness.co.uk>"
 
