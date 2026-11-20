@@ -12,6 +12,8 @@ It is operational on Ruby, Python and Javascript projects.
 
 ## Installation
 
+### Standard Installation (Recommended)
+
 1. Create a file called `.github/workflows/version-forget-me-not.yml` in your repository with the following YAML (modify as instructed in the comments):
 
    ```yaml
@@ -40,6 +42,35 @@ It is operational on Ruby, Python and Javascript projects.
    
    ```
 
+### Faster Installation (Pre-built Docker Image)
+
+For faster execution, you can use the pre-built Docker image from GitHub Container Registry:
+
+   ```yaml
+   name: Version Forget-Me-Not
+   
+   on:
+     pull_request:
+       branches:
+         - main # Change if your default branch is different
+       types: [opened, synchronize]
+   permissions:
+     contents: read
+     statuses: write
+   jobs:
+     build:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: docker://ghcr.io/simplybusiness/version-forget-me-not:v2
+           env:
+             ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+             VERSION_FILE_PATH: "<PATH>"
+   
+   ```
+
+The pre-built image approach skips the Docker build step, resulting in faster workflow execution.
+
+### Completing the Setup
 1. Create a new Pull Request to kick off this GitHub Action. You’ll notice it show up at the bottom of your pull request.
 
    ![Gem Version status check failing after initial installation](images/after-initial-installation.png)

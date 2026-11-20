@@ -1,0 +1,75 @@
+---
+name: Publish Docker Image
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish (e.g., v2.0.0)'
+        required: true
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            TAG=${{ github.event.release.tag_name }}
+          else
+            TAG=${{ inputs.tag }}
+          fi
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          # Extract major version (e.g., v2 from v2.1.0)
+          MAJOR_VERSION=$(echo ${TAG} | cut -d. -f1)
+          echo "major=${MAJOR_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.version.outputs.tag }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.version.outputs.tag }}
+            type=semver,pattern={{major}},value=${{ steps.version.outputs.tag }}
+            type=raw,value=latest
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Update major version tag
+        if: github.event_name == 'release'
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          MAJOR_TAG=${{ steps.version.outputs.major }}
+          git tag -fa ${MAJOR_TAG} -m "Update ${MAJOR_TAG} to ${{ steps.version.outputs.tag }}"
+          git push origin ${MAJOR_TAG} --force
